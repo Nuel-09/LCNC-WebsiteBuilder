@@ -2,16 +2,10 @@ import React, { useEffect, useState, useMemo } from "react";
 import { Puck } from "@puckeditor/core";
 import "@puckeditor/core/dist/index.css";
 import {
-  Header,
-  Hero,
-  Announcement,
-  Contact,
-  Footer,
-} from "./PuckComponents";
-import {
   getConfiguration,
   saveConfiguration,
 } from "../services/configurationService";
+import { getDefaultLayout, puckConfig } from "./puckConfig";
 
 /**
  * BuilderEditor Component
@@ -23,7 +17,7 @@ import {
  * - Preview mode for live updates
  * - Error handling and user feedback
  */
-const BuilderEditor = ({ token, projectId, onPreviewUpdate }) => {
+const BuilderEditor = ({ token, projectId, onPreviewUpdate, onViewPage }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [initialData, setInitialData] = useState(null);
@@ -32,30 +26,7 @@ const BuilderEditor = ({ token, projectId, onPreviewUpdate }) => {
 
   // Define available components for the editor
   // Users will drag these onto the canvas and customize their properties
-  const config = useMemo(() => ({
-    components: {
-      Header: {
-        render: Header,
-        fields: Header.puckFields,
-      },
-      Hero: {
-        render: Hero,
-        fields: Hero.puckFields,
-      },
-      Announcement: {
-        render: Announcement,
-        fields: Announcement.puckFields,
-      },
-      Contact: {
-        render: Contact,
-        fields: Contact.puckFields,
-      },
-      Footer: {
-        render: Footer,
-        fields: Footer.puckFields,
-      },
-    },
-  }), []);
+  const config = useMemo(() => puckConfig, []);
 
   // Load initial configuration from backend
   useEffect(() => {
@@ -84,53 +55,6 @@ const BuilderEditor = ({ token, projectId, onPreviewUpdate }) => {
       loadConfiguration();
     }
   }, [token, projectId]);
-
-  // Define default starter layout for new projects
-  const getDefaultLayout = () => ({
-    content: [
-      {
-        type: "Header",
-        props: {
-          title: "Welcome to School Builder",
-          subtitle: "Create your school website visually",
-        },
-      },
-      {
-        type: "Hero",
-        props: {
-          heading: "Build Your School Website",
-          description: "Drag and drop components to create a landing page",
-          buttonText: "Get Started",
-          buttonUrl: "#",
-        },
-      },
-      {
-        type: "Announcement",
-        props: {
-          title: "Latest Updates",
-          items: [
-            {
-              date: "Today",
-              title: "Welcome",
-              content: "Customize this announcement with your news",
-            },
-          ],
-        },
-      },
-      {
-        type: "Contact",
-        props: {
-          email: "contact@school.com",
-          phone: "+1 (555) 000-0000",
-          address: "Your School Address",
-        },
-      },
-      {
-        type: "Footer",
-        props: { copyrightText: "© 2026 Your School. All rights reserved." },
-      },
-    ],
-  });
 
   // Save configuration to backend
   const handleSave = async (data) => {
@@ -208,22 +132,42 @@ const BuilderEditor = ({ token, projectId, onPreviewUpdate }) => {
             </small>
           )}
         </div>
-        <button
-          onClick={() => initialData && handleSave(initialData)}
-          disabled={isSaving}
-          style={{
-            background: isSaving ? "#ccc" : "#667eea",
-            color: "white",
-            padding: "8px 16px",
-            border: "none",
-            borderRadius: "4px",
-            cursor: isSaving ? "not-allowed" : "pointer",
-            fontSize: "0.9em",
-            fontWeight: "bold",
-          }}
-        >
-          {isSaving ? "Saving..." : "Save Configuration"}
-        </button>
+        <div style={{ display: "flex", gap: "8px" }}>
+          <button
+            type="button"
+            onClick={() => onViewPage?.(initialData)}
+            disabled={!initialData}
+            style={{
+              background: "white",
+              color: "#111",
+              padding: "8px 16px",
+              border: "1px solid #d5d5d5",
+              borderRadius: "4px",
+              cursor: !initialData ? "not-allowed" : "pointer",
+              fontSize: "0.9em",
+              fontWeight: "bold",
+            }}
+          >
+            View page
+          </button>
+          <button
+            type="button"
+            onClick={() => initialData && handleSave(initialData)}
+            disabled={isSaving}
+            style={{
+              background: isSaving ? "#ccc" : "#3b5ccc",
+              color: "white",
+              padding: "8px 16px",
+              border: "none",
+              borderRadius: "4px",
+              cursor: isSaving ? "not-allowed" : "pointer",
+              fontSize: "0.9em",
+              fontWeight: "bold",
+            }}
+          >
+            {isSaving ? "Publishing..." : "Publish"}
+          </button>
+        </div>
       </div>
 
       {/* Puck Editor */}
