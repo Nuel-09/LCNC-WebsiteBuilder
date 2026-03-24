@@ -4,7 +4,8 @@ import { useAppContext } from "../../context/AppContext";
 
 function BuilderPage() {
   const navigate = useNavigate();
-  const { token, selectedProjectId, selectedProject, setPreviewData } = useAppContext();
+  const { token, selectedProjectId, selectedProject, setPreviewData } =
+    useAppContext();
 
   return (
     <section className="space-y-4">
@@ -12,11 +13,15 @@ function BuilderPage() {
         <div>
           <h2 className="text-xl font-semibold">Visual Builder</h2>
           <p className="text-sm text-muted-foreground">
-            Structure follows Puck-style editor patterns and can be restyled later for your custom product identity.
+            Structure follows Puck-style editor patterns and can be restyled
+            later for your custom product identity.
           </p>
         </div>
         <p className="text-sm text-muted-foreground">
-          Project: <strong>{selectedProject ? selectedProject.projectName : "none selected"}</strong>
+          Project:{" "}
+          <strong>
+            {selectedProject ? selectedProject.projectName : "none selected"}
+          </strong>
         </p>
       </div>
 
@@ -31,7 +36,11 @@ function BuilderPage() {
         </div>
       ) : (
         <div className="rounded-xl border bg-card p-6 text-sm text-muted-foreground">
-          Select a project in <Link to="/dashboard" className="underline">Dashboard</Link> to start editing.
+          Select a project in{" "}
+          <Link to="/dashboard" className="underline">
+            Dashboard
+          </Link>{" "}
+          to start editing.
         </div>
       )}
     </section>

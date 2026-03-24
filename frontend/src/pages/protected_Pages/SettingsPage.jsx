@@ -7,7 +7,8 @@ function SettingsPage() {
     <section className="rounded-xl border bg-card p-6">
       <h2 className="text-xl font-semibold">Settings</h2>
       <p className="mt-2 text-sm text-muted-foreground">
-        This page is ready for account preferences and, later, AI builder preferences.
+        This page is ready for account preferences and, later, AI builder
+        preferences.
       </p>
 
       <div className="mt-6 space-y-2 text-sm">

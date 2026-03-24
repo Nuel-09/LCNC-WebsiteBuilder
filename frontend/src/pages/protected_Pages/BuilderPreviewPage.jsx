@@ -50,7 +50,9 @@ function BuilderPreviewPage() {
         <div>
           <h2 className="text-xl font-semibold">Published View</h2>
           <p className="text-sm text-muted-foreground">
-            {selectedProject ? `${selectedProject.projectName} preview` : "No project selected"}
+            {selectedProject
+              ? `${selectedProject.projectName} preview`
+              : "No project selected"}
           </p>
         </div>
         <Link to="/builder" className="rounded-md border px-3 py-2 text-sm">
@@ -59,9 +61,13 @@ function BuilderPreviewPage() {
       </div>
 
       {isLoading ? (
-        <div className="rounded-xl border bg-card p-6 text-sm text-muted-foreground">Loading page...</div>
+        <div className="rounded-xl border bg-card p-6 text-sm text-muted-foreground">
+          Loading page...
+        </div>
       ) : error ? (
-        <div className="rounded-xl border bg-card p-6 text-sm text-destructive">{error}</div>
+        <div className="rounded-xl border bg-card p-6 text-sm text-destructive">
+          {error}
+        </div>
       ) : (
         <div className="overflow-hidden rounded-xl border bg-card">
           <Render config={puckConfig} data={data} />

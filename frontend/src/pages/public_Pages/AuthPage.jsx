@@ -45,7 +45,8 @@ function AuthPage() {
       <section className="mx-auto max-w-lg rounded-2xl border bg-card p-8 shadow-sm">
         <h1 className="text-2xl font-semibold">Account Access</h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          Use login for existing users, or signup to create a new school account.
+          Use login for existing users, or signup to create a new school
+          account.
         </p>
 
         <div className="mt-6 flex gap-2">
@@ -62,7 +63,9 @@ function AuthPage() {
             type="button"
             onClick={() => setMode("signup")}
             className={`rounded-md px-3 py-2 text-sm ${
-              mode === "signup" ? "bg-primary text-primary-foreground" : "border"
+              mode === "signup"
+                ? "bg-primary text-primary-foreground"
+                : "border"
             }`}
           >
             Signup
@@ -76,7 +79,9 @@ function AuthPage() {
               required
               type="email"
               value={form.email}
-              onChange={(event) => setForm((prev) => ({ ...prev, email: event.target.value }))}
+              onChange={(event) =>
+                setForm((prev) => ({ ...prev, email: event.target.value }))
+              }
               className="w-full rounded-md border px-3 py-2"
             />
           </label>
@@ -87,7 +92,9 @@ function AuthPage() {
               required
               type="password"
               value={form.password}
-              onChange={(event) => setForm((prev) => ({ ...prev, password: event.target.value }))}
+              onChange={(event) =>
+                setForm((prev) => ({ ...prev, password: event.target.value }))
+              }
               className="w-full rounded-md border px-3 py-2"
             />
           </label>
@@ -95,21 +102,35 @@ function AuthPage() {
           {mode === "signup" && (
             <>
               <label className="block text-sm">
-                <span className="mb-1 block text-muted-foreground">Full Name</span>
+                <span className="mb-1 block text-muted-foreground">
+                  Full Name
+                </span>
                 <input
                   type="text"
                   value={form.fullName}
-                  onChange={(event) => setForm((prev) => ({ ...prev, fullName: event.target.value }))}
+                  onChange={(event) =>
+                    setForm((prev) => ({
+                      ...prev,
+                      fullName: event.target.value,
+                    }))
+                  }
                   className="w-full rounded-md border px-3 py-2"
                 />
               </label>
 
               <label className="block text-sm">
-                <span className="mb-1 block text-muted-foreground">School Name</span>
+                <span className="mb-1 block text-muted-foreground">
+                  School Name
+                </span>
                 <input
                   type="text"
                   value={form.schoolName}
-                  onChange={(event) => setForm((prev) => ({ ...prev, schoolName: event.target.value }))}
+                  onChange={(event) =>
+                    setForm((prev) => ({
+                      ...prev,
+                      schoolName: event.target.value,
+                    }))
+                  }
                   className="w-full rounded-md border px-3 py-2"
                 />
               </label>
@@ -121,13 +142,20 @@ function AuthPage() {
             disabled={isLoading}
             className="w-full rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground disabled:opacity-60"
           >
-            {isLoading ? "Please wait..." : mode === "signup" ? "Create Account" : "Login"}
+            {isLoading
+              ? "Please wait..."
+              : mode === "signup"
+                ? "Create Account"
+                : "Login"}
           </button>
         </form>
 
         <p className="mt-4 text-sm text-muted-foreground">
           Back to{" "}
-          <Link to="/" className="font-medium text-primary underline-offset-4 hover:underline">
+          <Link
+            to="/"
+            className="font-medium text-primary underline-offset-4 hover:underline"
+          >
             Home
           </Link>
         </p>

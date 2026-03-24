@@ -1,9 +1,12 @@
 import {
+  About,
+  AdmissionsCta,
   Announcement,
   Contact,
   Footer,
   Header,
   Hero,
+  Programs,
 } from "./PuckComponents";
 
 export const puckConfig = {
@@ -16,9 +19,21 @@ export const puckConfig = {
       render: Hero,
       fields: Hero.puckFields,
     },
+    About: {
+      render: About,
+      fields: About.puckFields,
+    },
+    Programs: {
+      render: Programs,
+      fields: Programs.puckFields,
+    },
     Announcement: {
       render: Announcement,
       fields: Announcement.puckFields,
+    },
+    AdmissionsCta: {
+      render: AdmissionsCta,
+      fields: AdmissionsCta.puckFields,
     },
     Contact: {
       render: Contact,
@@ -44,10 +59,39 @@ export function getDefaultLayout() {
       {
         type: "Hero",
         props: {
-          heading: "Build Your School Website",
-          description: "Drag and drop components to create a landing page",
-          buttonText: "Get Started",
-          buttonUrl: "#",
+          heading: "Inspiring Excellence in Every Student",
+          description:
+            "A modern learning environment focused on growth, values and academic strength.",
+          buttonText: "Apply Now",
+          buttonUrl: "/admissions",
+        },
+      },
+      {
+        type: "About",
+        props: {
+          title: "About Our School",
+          description:
+            "We provide a safe and inclusive environment where students build confidence, leadership and academic success.",
+        },
+      },
+      {
+        type: "Programs",
+        props: {
+          title: "Academic Programs",
+          items: [
+            {
+              name: "Early Years",
+              summary: "Strong foundation in literacy and numeracy.",
+            },
+            {
+              name: "Primary School",
+              summary: "Balanced academics, creativity and social growth.",
+            },
+            {
+              name: "STEM Club",
+              summary: "Hands-on science and technology projects.",
+            },
+          ],
         },
       },
       {
@@ -61,6 +105,14 @@ export function getDefaultLayout() {
               content: "Customize this announcement with your news",
             },
           ],
+        },
+      },
+      {
+        type: "AdmissionsCta",
+        props: {
+          heading: "Admissions Open for 2026/2027",
+          buttonText: "Start Application",
+          buttonUrl: "/admissions",
         },
       },
       {

@@ -35,3 +35,10 @@ prisma/migrations/
 # Logs
 logs/
 *.log
+
+# Reference/base44 files
+base44files/
+
+# schema and database
+SCHEMA_DBDIAGRAM.sql
+UPDATED_SCHEMA.prisma

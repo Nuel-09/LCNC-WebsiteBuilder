@@ -1,6 +1,6 @@
 /**
  * School Builder Components for Puck Visual Editor
- * 
+ *
  * These components define the building blocks available in the visual editor.
  * Each component has:
  * - render: How it appears in the canvas
@@ -38,7 +38,8 @@ export const Hero = ({
 }) => (
   <section
     style={{
-      background: "url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 1200 400%22><rect fill=%22%23f0f4f8%22 width=%221200%22 height=%22400%22/></svg>')",
+      background:
+        "url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 1200 400%22><rect fill=%22%23f0f4f8%22 width=%221200%22 height=%22400%22/></svg>')",
       backgroundSize: "cover",
       padding: "60px 20px",
       textAlign: "center",
@@ -85,15 +86,137 @@ Hero.puckFields = {
   buttonUrl: { type: "text", label: "Button URL" },
 };
 
+// About Component - School mission/overview
+export const About = ({
+  title = "About Our School",
+  description = "We are committed to nurturing excellence, discipline and innovation.",
+}) => (
+  <section style={{ padding: "48px 20px", background: "#ffffff" }}>
+    <div style={{ maxWidth: "900px", margin: "0 auto", textAlign: "center" }}>
+      <h3 style={{ fontSize: "2rem", marginBottom: "16px", color: "#1f2937" }}>
+        {title}
+      </h3>
+      <p style={{ margin: 0, color: "#4b5563", lineHeight: 1.7 }}>
+        {description}
+      </p>
+    </div>
+  </section>
+);
+
+About.defaultProps = {
+  title: "About Our School",
+  description:
+    "We are committed to nurturing excellence, discipline and innovation.",
+};
+About.puckFields = {
+  title: { type: "text", label: "Title" },
+  description: { type: "textarea", label: "Description" },
+};
+
+// Programs Component - Academic offerings/cards
+export const Programs = ({
+  title = "Academic Programs",
+  items = [
+    {
+      name: "Early Years",
+      summary: "Foundation learning with play-based methods.",
+    },
+    {
+      name: "Primary School",
+      summary: "Strong academics with character formation.",
+    },
+    {
+      name: "Creative Arts",
+      summary: "Music, drama and fine arts for expression.",
+    },
+  ],
+}) => (
+  <section style={{ padding: "48px 20px", background: "#f8fafc" }}>
+    <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
+      <h3
+        style={{
+          fontSize: "2rem",
+          marginBottom: "24px",
+          color: "#1f2937",
+          textAlign: "center",
+        }}
+      >
+        {title}
+      </h3>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+          gap: "16px",
+        }}
+      >
+        {items.map((item, idx) => (
+          <article
+            key={idx}
+            style={{
+              background: "#fff",
+              border: "1px solid #e5e7eb",
+              borderRadius: "10px",
+              padding: "16px",
+            }}
+          >
+            <h4 style={{ margin: "0 0 8px 0", color: "#111827" }}>
+              {item.name}
+            </h4>
+            <p style={{ margin: 0, color: "#4b5563", fontSize: "0.95rem" }}>
+              {item.summary}
+            </p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+);
+
+Programs.defaultProps = {
+  title: "Academic Programs",
+  items: [
+    {
+      name: "Early Years",
+      summary: "Foundation learning with play-based methods.",
+    },
+    {
+      name: "Primary School",
+      summary: "Strong academics with character formation.",
+    },
+    {
+      name: "Creative Arts",
+      summary: "Music, drama and fine arts for expression.",
+    },
+  ],
+};
+Programs.puckFields = {
+  title: { type: "text", label: "Section Title" },
+};
+
 // Announcement Component - News/updates section
 export const Announcement = ({
   title = "Latest News",
   items = [
-    { date: "Feb 28", title: "New Science Lab Opened", content: "State-of-the-art facilities" },
-    { date: "Feb 25", title: "Sports Tournament", content: "Inter-school championship" },
+    {
+      date: "Feb 28",
+      title: "New Science Lab Opened",
+      content: "State-of-the-art facilities",
+    },
+    {
+      date: "Feb 25",
+      title: "Sports Tournament",
+      content: "Inter-school championship",
+    },
   ],
 }) => (
-  <section style={{ padding: "40px 20px", background: "#fff9e6", borderLeft: "4px solid #ffc107" }}>
+  <section
+    style={{
+      padding: "40px 20px",
+      background: "#fff9e6",
+      borderLeft: "4px solid #ffc107",
+    }}
+  >
     <h3 style={{ color: "#333", marginBottom: "20px" }}>{title}</h3>
     <div>
       {items.map((item, idx) => (
@@ -123,12 +246,63 @@ export const Announcement = ({
 Announcement.defaultProps = {
   title: "Latest News",
   items: [
-    { date: "Feb 28", title: "New Science Lab Opened", content: "State-of-the-art facilities" },
-    { date: "Feb 25", title: "Sports Tournament", content: "Inter-school championship" },
+    {
+      date: "Feb 28",
+      title: "New Science Lab Opened",
+      content: "State-of-the-art facilities",
+    },
+    {
+      date: "Feb 25",
+      title: "Sports Tournament",
+      content: "Inter-school championship",
+    },
   ],
 };
 Announcement.puckFields = {
   title: { type: "text", label: "Section Title" },
+};
+
+// Admissions CTA Component
+export const AdmissionsCta = ({
+  heading = "Admissions Open for New Session",
+  buttonText = "Apply Now",
+  buttonUrl = "/admissions",
+}) => (
+  <section
+    style={{
+      padding: "44px 20px",
+      background: "linear-gradient(135deg, #1d4ed8 0%, #4338ca 100%)",
+      color: "white",
+      textAlign: "center",
+    }}
+  >
+    <h3 style={{ margin: "0 0 16px 0", fontSize: "1.9rem" }}>{heading}</h3>
+    <a
+      href={buttonUrl}
+      style={{
+        display: "inline-block",
+        textDecoration: "none",
+        background: "white",
+        color: "#1f2937",
+        padding: "10px 20px",
+        borderRadius: "8px",
+        fontWeight: 700,
+      }}
+    >
+      {buttonText}
+    </a>
+  </section>
+);
+
+AdmissionsCta.defaultProps = {
+  heading: "Admissions Open for New Session",
+  buttonText: "Apply Now",
+  buttonUrl: "/admissions",
+};
+AdmissionsCta.puckFields = {
+  heading: { type: "text", label: "Heading" },
+  buttonText: { type: "text", label: "Button Text" },
+  buttonUrl: { type: "text", label: "Button URL" },
 };
 
 // Contact Component - Contact information section
@@ -159,7 +333,10 @@ export const Contact = ({
           EMAIL
         </p>
         <p style={{ margin: 0, color: "#333", fontWeight: "bold" }}>
-          <a href={`mailto:${email}`} style={{ color: "#667eea", textDecoration: "none" }}>
+          <a
+            href={`mailto:${email}`}
+            style={{ color: "#667eea", textDecoration: "none" }}
+          >
             {email}
           </a>
         </p>
@@ -169,7 +346,10 @@ export const Contact = ({
           PHONE
         </p>
         <p style={{ margin: 0, color: "#333", fontWeight: "bold" }}>
-          <a href={`tel:${phone}`} style={{ color: "#667eea", textDecoration: "none" }}>
+          <a
+            href={`tel:${phone}`}
+            style={{ color: "#667eea", textDecoration: "none" }}
+          >
             {phone}
           </a>
         </p>
@@ -198,7 +378,9 @@ Contact.puckFields = {
 };
 
 // Footer Component - Footer section
-export const Footer = ({ copyrightText = "© 2026 School Name. All rights reserved." }) => (
+export const Footer = ({
+  copyrightText = "© 2026 School Name. All rights reserved.",
+}) => (
   <footer
     style={{
       background: "#333",
@@ -211,7 +393,9 @@ export const Footer = ({ copyrightText = "© 2026 School Name. All rights reserv
   </footer>
 );
 
-Footer.defaultProps = { copyrightText: "© 2026 School Name. All rights reserved." };
+Footer.defaultProps = {
+  copyrightText: "© 2026 School Name. All rights reserved.",
+};
 Footer.puckFields = {
   copyrightText: { type: "text", label: "Copyright Text" },
 };

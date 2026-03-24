@@ -9,7 +9,7 @@ import { getDefaultLayout, puckConfig } from "./puckConfig";
 
 /**
  * BuilderEditor Component
- * 
+ *
  * Wraps Puck visual editor and integrates with backend configuration API.
  * Manages:
  * - Loading saved configurations from backend
@@ -28,6 +28,20 @@ const BuilderEditor = ({ token, projectId, onPreviewUpdate, onViewPage }) => {
   // Users will drag these onto the canvas and customize their properties
   const config = useMemo(() => puckConfig, []);
 
+  const parseConfigJson = (rawConfig) => {
+    if (!rawConfig) return getDefaultLayout();
+
+    if (typeof rawConfig === "string") {
+      try {
+        return JSON.parse(rawConfig);
+      } catch {
+        return getDefaultLayout();
+      }
+    }
+
+    return rawConfig;
+  };
+
   // Load initial configuration from backend
   useEffect(() => {
     const loadConfiguration = async () => {
@@ -35,12 +49,9 @@ const BuilderEditor = ({ token, projectId, onPreviewUpdate, onViewPage }) => {
         setIsLoading(true);
         setError(null);
         const config = await getConfiguration(token, projectId);
-        
-        // Parse stored JSON or use default starter layout
-        const parsedConfig = config.configJson
-          ? JSON.parse(config.configJson)
-          : getDefaultLayout();
-        
+
+        const parsedConfig = parseConfigJson(config.configJson);
+
         setInitialData(parsedConfig);
       } catch (err) {
         console.error("Failed to load configuration:", err);
@@ -61,12 +72,11 @@ const BuilderEditor = ({ token, projectId, onPreviewUpdate, onViewPage }) => {
     try {
       setIsSaving(true);
       setError(null);
-      const configJson = JSON.stringify(data, null, 2);
-      
-      await saveConfiguration(token, projectId, configJson);
-      
+
+      await saveConfiguration(token, projectId, data);
+
       setLastSaved(new Date().toLocaleTimeString());
-      
+
       // Notify parent component to update preview
       if (onPreviewUpdate) {
         onPreviewUpdate(data);
@@ -123,13 +133,9 @@ const BuilderEditor = ({ token, projectId, onPreviewUpdate, onViewPage }) => {
         }}
       >
         <div>
-          <h3 style={{ margin: "0 0 5px 0", color: "#333" }}>
-            Visual Editor
-          </h3>
+          <h3 style={{ margin: "0 0 5px 0", color: "#333" }}>Visual Editor</h3>
           {lastSaved && (
-            <small style={{ color: "#999" }}>
-              Last saved: {lastSaved}
-            </small>
+            <small style={{ color: "#999" }}>Last saved: {lastSaved}</small>
           )}
         </div>
         <div style={{ display: "flex", gap: "8px" }}>
@@ -148,7 +154,7 @@ const BuilderEditor = ({ token, projectId, onPreviewUpdate, onViewPage }) => {
               fontWeight: "bold",
             }}
           >
-            View page
+            Preview page
           </button>
           <button
             type="button"
