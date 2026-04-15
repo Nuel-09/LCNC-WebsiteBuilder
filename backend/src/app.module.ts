@@ -8,7 +8,12 @@ import { ProjectsModule } from './projects/projects.module';
 import { ConfigurationsModule } from './configurations/configurations.module';
 import { ComponentsModule } from './components/components.module';
 import { PrismaModule } from './prisma/prisma.module';
+import { AiModule } from './ai/ai.module';
 
+/**
+ * Root application module.
+ * AI operations become available to the app when AiModule is imported here.
+ */
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -18,6 +23,8 @@ import { PrismaModule } from './prisma/prisma.module';
     ProjectsModule,
     ConfigurationsModule,
     ComponentsModule,
+    // Registers authenticated AI endpoints and provider wiring.
+    AiModule,
   ],
   controllers: [AppController],
   providers: [AppService],

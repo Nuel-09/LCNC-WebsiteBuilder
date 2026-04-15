@@ -4,8 +4,7 @@ import { useAppContext } from "../../context/AppContext";
 
 function BuilderPage() {
   const navigate = useNavigate();
-  const { token, selectedProjectId, selectedProject, setPreviewData } =
-    useAppContext();
+  const { token, selectedProjectId, selectedProject } = useAppContext();
 
   return (
     <section className="space-y-4">
@@ -30,7 +29,6 @@ function BuilderPage() {
           <BuilderEditor
             token={token}
             projectId={selectedProjectId}
-            onPreviewUpdate={setPreviewData}
             onViewPage={() => navigate("/builder/view")}
           />
         </div>

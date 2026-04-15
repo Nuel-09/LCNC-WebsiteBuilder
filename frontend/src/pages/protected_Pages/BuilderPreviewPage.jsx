@@ -1,9 +1,13 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Render } from "@puckeditor/core";
-import { getConfiguration } from "../../services/configurationService";
+import { getPublishedConfiguration } from "../../services/configurationService";
 import { useAppContext } from "../../context/AppContext";
 import { getDefaultLayout, puckConfig } from "../../components/puckConfig";
+import {
+  ensureBuilderShape,
+  getActivePageData,
+} from "../../components/builderConfigUtils";
 
 function normalizeConfigJson(rawConfig) {
   if (!rawConfig) return getDefaultLayout();
@@ -32,8 +36,15 @@ function BuilderPreviewPage() {
       try {
         setIsLoading(true);
         setError("");
-        const result = await getConfiguration(token, selectedProjectId);
-        setData(normalizeConfigJson(result?.configJson));
+        const result = await getPublishedConfiguration(
+          token,
+          selectedProjectId,
+        );
+        const normalized = ensureBuilderShape(
+          normalizeConfigJson(result?.configJson),
+          getDefaultLayout().content,
+        );
+        setData(getActivePageData(normalized));
       } catch (err) {
         setError(err.message || "Failed to load page preview.");
       } finally {
@@ -51,7 +62,7 @@ function BuilderPreviewPage() {
           <h2 className="text-xl font-semibold">Published View</h2>
           <p className="text-sm text-muted-foreground">
             {selectedProject
-              ? `${selectedProject.projectName} preview`
+              ? `${selectedProject.projectName} published preview`
               : "No project selected"}
           </p>
         </div>

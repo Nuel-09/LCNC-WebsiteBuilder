@@ -10,7 +10,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@puckeditor/ai-types": "^0.6.0",
+    "@puckeditor/cloud-client": "^0.6.0",
     "@puckeditor/core": "^0.21.1",
+    "@puckeditor/plugin-ai": "^0.6.0",
     "@radix-ui/react-slot": "^1.2.4",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

@@ -21,6 +21,9 @@ async function bootstrap() {
 
   app.enableCors({
     origin: allowedOrigins,
+    // AI chat transport currently sends credentialed requests; this must be true
+    // for browsers to expose cross-origin responses when credentials are included.
+    credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
   });
