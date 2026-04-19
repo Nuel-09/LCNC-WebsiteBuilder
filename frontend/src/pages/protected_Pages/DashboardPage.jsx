@@ -88,6 +88,7 @@ function DashboardPage() {
             required
             placeholder="Project name"
             value={newProjectForm.projectName}
+            min={3}
             onChange={(event) =>
               setNewProjectForm((previous) => ({
                 ...previous,
@@ -132,7 +133,9 @@ function DashboardPage() {
         <h2 className="text-lg font-semibold">Project Workspace</h2>
         <div className="mt-3 flex flex-wrap items-center gap-3">
           <label className="text-sm">
-            <span className="mb-1 block text-muted-foreground">Active Project</span>
+            <span className="mb-1 block text-muted-foreground">
+              Active Project
+            </span>
             <select
               value={selectedProjectId}
               onChange={(event) => selectProject(event.target.value)}
@@ -147,7 +150,9 @@ function DashboardPage() {
             </select>
           </label>
 
-          <p className="text-sm text-muted-foreground">{selectedProjectSummary}</p>
+          <p className="text-sm text-muted-foreground">
+            {selectedProjectSummary}
+          </p>
 
           {selectedProjectId ? (
             <div className="flex flex-wrap gap-2">
@@ -283,7 +288,11 @@ function DashboardPage() {
         )}
 
         <p className="mt-4 text-xs text-muted-foreground">
-          Need to create content now? Go to <Link to="/builder" className="underline">Builder</Link> after selecting a project.
+          Need to create content now? Go to{" "}
+          <Link to="/builder" className="underline">
+            Builder
+          </Link>{" "}
+          after selecting a project.
         </p>
       </section>
     </div>

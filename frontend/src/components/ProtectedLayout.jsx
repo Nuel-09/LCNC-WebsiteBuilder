@@ -8,7 +8,7 @@ function navClass({ isActive }) {
 }
 
 function ProtectedLayout() {
-  const { user, message, isLoading, logout } = useAppContext();
+  const { user, logout } = useAppContext();
 
   return (
     <div className="min-h-screen bg-background">
@@ -16,9 +16,6 @@ function ProtectedLayout() {
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3">
           <div>
             <h1 className="text-lg font-semibold">LCNC Website Builder</h1>
-            <p className="text-xs text-muted-foreground">
-              {isLoading ? "Working..." : message}
-            </p>
           </div>
 
           <nav className="flex items-center gap-2">
