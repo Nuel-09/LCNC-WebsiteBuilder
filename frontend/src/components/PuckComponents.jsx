@@ -226,7 +226,7 @@ export const Hero = ({
   stat4 = "98% Pass Rate",
 }) => {
   const statItems = [stat1, stat2, stat3, stat4];
-  const shouldShowStats = showStats === true || showStats === "true";
+  const shouldShowStats = showStats;
 
   return (
     <section

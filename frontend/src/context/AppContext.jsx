@@ -9,19 +9,25 @@
  */
 
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { login, signup } from "../services/authService";
-import {
-  createProject,
-  deleteProject,
-  getProjects,
-  updateProject,
-} from "../services/projectsService";
+// import {
+//   createProject,
+//   deleteProject,
+//   projectApi.getProjects,
+//   updateProject,
+// } from "../services/projectsService";
+import authApi from "@/services/authService";
+import { toast } from "react-toastify";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import projectApi from "@/services/projectsService";
 
 const AppContext = createContext(null);
 
 export function AppProvider({ children }) {
   // JWT token is persisted so users remain logged in after refresh.
   const [token, setToken] = useState(() => localStorage.getItem("token") ?? "");
+  const [searchParams] = useSearchParams();
+  const nav = useNavigate();
+  const error = searchParams.get("error");
 
   // User profile payload returned by backend auth endpoints.
   const [user, setUser] = useState(() => {
@@ -43,7 +49,6 @@ export function AppProvider({ children }) {
 
   // Shared UX state surfaced in the top bar.
   const [isLoading, setIsLoading] = useState(false);
-  const [message, setMessage] = useState("Ready");
 
   const selectedProject = useMemo(
     () => projects.find((project) => project.id === selectedProjectId) ?? null,
@@ -72,7 +77,7 @@ export function AppProvider({ children }) {
   async function loadProjects(currentToken = token) {
     if (!currentToken) return;
 
-    const result = await getProjects(currentToken);
+    const result = await projectApi.getProjects();
     setProjects(result);
 
     // Keep prior selection if still valid, otherwise fall back to first project.
@@ -82,26 +87,30 @@ export function AppProvider({ children }) {
       return;
     }
 
-    const stillExists = result.some((project) => project.id === selectedProjectId);
-    const nextSelectedProjectId = stillExists ? selectedProjectId : result[0].id;
+    const stillExists = result.some(
+      (project) => project.id === selectedProjectId,
+    );
+    const nextSelectedProjectId = stillExists
+      ? selectedProjectId
+      : result[0].id;
     setSelectedProjectId(nextSelectedProjectId);
     localStorage.setItem("selectedProjectId", nextSelectedProjectId);
   }
 
   async function authenticate(mode, payload) {
     setIsLoading(true);
-    setMessage("Authenticating...");
 
     try {
       const result =
-        mode === "signup" ? await signup(payload) : await login(payload);
+        mode === "signup"
+          ? await authApi.signup(payload)
+          : await authApi.login(payload);
 
       persistSession(result.token, result.user);
       await loadProjects(result.token);
-      setMessage(`Welcome ${result.user.email}`);
+      toast.success(`Welcome ${result.user.email}`);
       return true;
-    } catch (error) {
-      setMessage(error.message);
+    } catch {
       return false;
     } finally {
       setIsLoading(false);
@@ -112,18 +121,18 @@ export function AppProvider({ children }) {
     if (!token) return;
 
     setIsLoading(true);
-    setMessage("Creating project...");
+    const toastId = toast.loading("Creating project...");
 
     try {
-      const created = await createProject(token, payload);
+      const created = await projectApi.createProject(payload);
+      if (!created) return;
       const nextProjects = [created, ...projects];
       setProjects(nextProjects);
       setSelectedProjectId(created.id);
       localStorage.setItem("selectedProjectId", created.id);
-      setMessage(`Project created: ${created.projectName}`);
-    } catch (error) {
-      setMessage(error.message);
+      toast.success(`Project created: ${created.projectName}`);
     } finally {
+      toast.dismiss(toastId);
       setIsLoading(false);
     }
   }
@@ -132,17 +141,19 @@ export function AppProvider({ children }) {
     if (!token || !projectId) return;
 
     setIsLoading(true);
-    setMessage("Updating project...");
+    const toastId = toast.loading("Updating project...");
 
     try {
-      const updated = await updateProject(token, projectId, payload);
+      const updated = await projectApi.updateProject(projectId, payload);
+      if (!updated) return;
       setProjects((previous) =>
-        previous.map((project) => (project.id === projectId ? updated : project)),
+        previous.map((project) =>
+          project.id === projectId ? updated : project,
+        ),
       );
-      setMessage(`Project updated: ${updated.projectName}`);
-    } catch (error) {
-      setMessage(error.message);
+      toast.success(`Project updated: ${updated.projectName}`);
     } finally {
+      toast.dismiss(toastId);
       setIsLoading(false);
     }
   }
@@ -151,12 +162,14 @@ export function AppProvider({ children }) {
     if (!token || !projectId) return;
 
     setIsLoading(true);
-    setMessage("Deleting project...");
+    const toastId = toast.loading("Deleting project...");
 
     try {
-      await deleteProject(token, projectId);
+      await projectApi.deleteProject(projectId);
 
-      const nextProjects = projects.filter((project) => project.id !== projectId);
+      const nextProjects = projects.filter(
+        (project) => project.id !== projectId,
+      );
       setProjects(nextProjects);
 
       if (selectedProjectId === projectId) {
@@ -170,10 +183,9 @@ export function AppProvider({ children }) {
         }
       }
 
-      setMessage("Project deleted");
-    } catch (error) {
-      setMessage(error.message);
+      toast.success("Project deleted");
     } finally {
+      toast.dismiss(toastId);
       setIsLoading(false);
     }
   }
@@ -182,14 +194,13 @@ export function AppProvider({ children }) {
     if (!token) return;
 
     setIsLoading(true);
-    setMessage("Refreshing projects...");
+    const toastId = toast.loading("Refreshing projects...");
 
     try {
       await loadProjects(token);
-      setMessage("Projects refreshed");
-    } catch (error) {
-      setMessage(error.message);
+      toast.success("Projects refreshed");
     } finally {
+      toast.dismiss(toastId);
       setIsLoading(false);
     }
   }
@@ -207,7 +218,6 @@ export function AppProvider({ children }) {
 
   function logout() {
     clearSession();
-    setMessage("Logged out");
   }
 
   useEffect(() => {
@@ -217,8 +227,6 @@ export function AppProvider({ children }) {
       try {
         setIsLoading(true);
         await loadProjects(token);
-      } catch (error) {
-        setMessage(error.message);
       } finally {
         setIsLoading(false);
       }
@@ -227,6 +235,20 @@ export function AppProvider({ children }) {
     hydrateSession();
   }, [token]);
 
+  useEffect(() => {
+    if (error) {
+      toast.error("Session expired. Please log in again.");
+      // Remove error param from URL using nav
+      const params = new URLSearchParams(window.location.search);
+      params.delete("error");
+      nav(
+        window.location.pathname +
+          (params.toString() ? "?" + params.toString() : ""),
+        { scroll: false },
+      );
+    }
+  }, [error]);
+
   const value = {
     token,
     user,
@@ -234,10 +256,6 @@ export function AppProvider({ children }) {
     selectedProjectId,
     selectedProject,
     isLoading,
-    message,
-
-    setMessage,
-
     authenticate,
     createNewProject,
     updateExistingProject,

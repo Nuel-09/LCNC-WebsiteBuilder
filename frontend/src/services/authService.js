@@ -1,21 +1,37 @@
-import { apiRequest } from '../lib/apiClient'
+import { BaseApi } from "./baseApi";
 
 /**
- * Signup request.
+ * Authentication service class that extends the BaseApi class.
  */
-export function signup(payload) {
-  return apiRequest('/auth/signup', {
-    method: 'POST',
-    body: JSON.stringify(payload),
-  })
+class AuthService extends BaseApi {
+  /**
+   * Signs up a user with the provided payload.
+   * @param {object} payload The payload containing user information.
+   * @returns {Promise<object>} The response data from the server.
+   */
+  signup = async (payload) => {
+    try {
+      const response = await this.instance.post("/auth/signup", payload);
+      return response.data;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  /**
+   * Logs in a user with the provided payload.
+   * @param {object} payload The payload containing user login credentials.
+   * @returns {Promise<object>} The response data from the server.
+   */
+  login = async (payload) => {
+    try {
+      const response = await this.instance.post("/auth/login", payload);
+      return response.data;
+    } catch (error) {
+      console.error(error);
+    }
+  };
 }
 
-/**
- * Login request.
- */
-export function login(payload) {
-  return apiRequest('/auth/login', {
-    method: 'POST',
-    body: JSON.stringify(payload),
-  })
-}
+const authApi = new AuthService();
+export default authApi;
