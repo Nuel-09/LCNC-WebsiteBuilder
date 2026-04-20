@@ -1,76 +1,101 @@
-import { apiRequest, authHeader } from "../lib/apiClient";
+import { toSerializableConfigObject } from "@/lib/utils";
+import { BaseApi } from "./baseApi";
 
 /**
- * Ensure the backend always receives an object for DTO validation.
+ * Configuration service class that extends the BaseApi class.
  */
-function toSerializableConfigObject(configJson) {
-  if (
-    configJson &&
-    typeof configJson === "object" &&
-    !Array.isArray(configJson)
-  ) {
-    return configJson;
+class ConfigurationService extends BaseApi {
+  /**
+   * Constructor for ConfigurationService.
+   * Calls super() to initialize BaseApi.
+   */
+  constructor() {
+    super();
   }
 
-  return { content: [] };
+  /**
+   * Retrieves the configuration for a project with the provided ID.
+   * @param {string} projectId The ID of the project.
+   * @returns {Promise<object>} The response data containing the configuration.
+   */
+  getConfiguration = async (projectId) => {
+    try {
+      const response = await this.instance.get(
+        `/projects/${projectId}/configuration`,
+      );
+      return response.data;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  /**
+   * Saves the configuration for a project with the provided ID.
+   * @param {string} projectId The ID of the project.
+   * @param {object} configJson The configuration object to save.
+   * @returns {Promise<object>} The response data from the server.
+   */
+  saveConfiguration = async (projectId, configJson) => {
+    try {
+      const safeConfigJson = toSerializableConfigObject(configJson);
+      const response = await this.instance.put(
+        `/projects/${projectId}/configuration`,
+        { configJson: safeConfigJson },
+      );
+      return response.data;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  /**
+   * Publishes the configuration for a project with the provided ID.
+   * @param {string} projectId The ID of the project.
+   * @returns {Promise<object>} The response data from the server.
+   */
+  publishConfiguration = async (projectId) => {
+    try {
+      const response = await this.instance.post(
+        `/projects/${projectId}/configuration/publish`,
+      );
+      return response.data;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  /**
+   * Retrieves the published configuration for a project with the provided ID.
+   * @param {string} projectId The ID of the project.
+   * @returns {Promise<object>} The response data containing the published configuration.
+   */
+  getPublishedConfiguration = async (projectId) => {
+    try {
+      const response = await this.instance.get(
+        `/projects/${projectId}/configuration/published`,
+      );
+      return response.data;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  /**
+   * Retrieves the preview mock data for a project with the provided ID.
+   * @param {string} projectId The ID of the project.
+   * @returns {Promise<object>} The response data containing the preview mock data.
+   */
+  getPreviewMockData = async (projectId) => {
+    try {
+      const response = await this.instance.get(
+        `/projects/${projectId}/configuration/preview/mock-data`,
+      );
+      return response.data;
+    } catch (error) {
+      console.error(error);
+    }
+  };
 }
 
-/**
- * Get saved builder JSON for selected project.
- */
-export function getConfiguration(token, projectId) {
-  return apiRequest(`/projects/${projectId}/configuration`, {
-    headers: {
-      ...authHeader(token),
-    },
-  });
-}
-
-/**
- * Save builder JSON for selected project.
- */
-export function saveConfiguration(token, projectId, configJson) {
-  const safeConfigJson = toSerializableConfigObject(configJson);
-
-  return apiRequest(`/projects/${projectId}/configuration`, {
-    method: "PUT",
-    headers: {
-      ...authHeader(token),
-    },
-    body: JSON.stringify({ configJson: safeConfigJson }),
-  });
-}
-
-/**
- * Publish current draft configuration.
- */
-export function publishConfiguration(token, projectId) {
-  return apiRequest(`/projects/${projectId}/configuration/publish`, {
-    method: "POST",
-    headers: {
-      ...authHeader(token),
-    },
-  });
-}
-
-/**
- * Get published configuration snapshot.
- */
-export function getPublishedConfiguration(token, projectId) {
-  return apiRequest(`/projects/${projectId}/configuration/published`, {
-    headers: {
-      ...authHeader(token),
-    },
-  });
-}
-
-/**
- * Get preview mock data for selected project.
- */
-export function getPreviewMockData(token, projectId) {
-  return apiRequest(`/projects/${projectId}/configuration/preview/mock-data`, {
-    headers: {
-      ...authHeader(token),
-    },
-  });
-}
+const configurationApi = new ConfigurationService();
+export default configurationApi;

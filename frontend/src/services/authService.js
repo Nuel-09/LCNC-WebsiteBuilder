@@ -5,6 +5,14 @@ import { BaseApi } from "./baseApi";
  */
 class AuthService extends BaseApi {
   /**
+   * Constructor for the AuthService class.
+   * Calls the superclass constructor to initialize the AuthService instance.
+   */
+  constructor() {
+    super();
+  }
+
+  /**
    * Signs up a user with the provided payload.
    * @param {object} payload The payload containing user information.
    * @returns {Promise<object>} The response data from the server.
