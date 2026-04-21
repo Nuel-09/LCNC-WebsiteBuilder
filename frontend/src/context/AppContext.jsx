@@ -24,6 +24,7 @@ export function AppProvider({ children }) {
   const [token, setToken] = useState(() => getToken());
 
   const error = searchParams.get("error");
+  console.log(error);
 
   // User profile payload returned by backend auth endpoints.
   const [user, setUser] = useState(() => {
@@ -63,6 +64,7 @@ export function AppProvider({ children }) {
     setUser(null);
     setProjects([]);
     setSelectedProjectId("");
+    setToken(null);
 
     localStorage.removeItem("token");
     localStorage.removeItem("user");
