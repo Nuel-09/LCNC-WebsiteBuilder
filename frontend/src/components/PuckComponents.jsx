@@ -33,6 +33,12 @@ function colorPickerField(label, exampleValue = "#4f6bed") {
   return {
     type: "custom",
     label,
+    ai: {
+      schema: {
+        type: "string",
+        description: `${label} as a hex color like ${exampleValue}`,
+      },
+    },
     render: ({ field, value, onChange, readOnly }) => (
       <div style={{ display: "grid", gap: "6px" }}>
         {/* Custom fields in this Puck version may not auto-render labels, so we render it explicitly. */}
