@@ -29,7 +29,7 @@ function BuilderPage() {
           <BuilderEditor
             token={token}
             projectId={selectedProjectId}
-            onViewPage={() => navigate("/builder/view")}
+            onPreviewPage={() => navigate("/builder/view")}
           />
         </div>
       ) : (

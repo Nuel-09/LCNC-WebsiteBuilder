@@ -25,7 +25,7 @@ import { createBuilderAiPlugin } from "../services/aiProvider";
  * - Error handling and user feedback
  */
 
-const BuilderEditor = ({ token, projectId, onPreviewUpdate, onViewPage }) => {
+const BuilderEditor = ({ token, projectId, onPreviewUpdate, onPreviewPage }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [initialData, setInitialData] = useState(null);
@@ -228,7 +228,7 @@ const BuilderEditor = ({ token, projectId, onPreviewUpdate, onViewPage }) => {
       if (!saved) return;
     }
 
-    onViewPage?.(currentData);
+    onPreviewPage?.(currentData);
   };
 
   if (isLoading) {

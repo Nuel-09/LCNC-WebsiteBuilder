@@ -42,3 +42,8 @@ base44files/
 # schema and database
 SCHEMA_DBDIAGRAM.sql
 UPDATED_SCHEMA.prisma
+
+#dissertation files
+.tmp_interim_docx
+interim_report.docx
+interim_report.zip
