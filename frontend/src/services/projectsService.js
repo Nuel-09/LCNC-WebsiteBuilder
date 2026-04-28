@@ -1,56 +1,21 @@
-import { apiRequest, authHeader } from "../lib/apiClient";
 import { BaseApi } from "./baseApi";
 
 /**
- * Fetch all projects for current user.
+ * Project service class that extends the BaseApi class.
  */
-// export function getProjects(token) {
-//   return apiRequest("/projects", {
-//     headers: {
-//       ...authHeader(token),
-//     },
-//   });
-// }
-
-// /**
-//  * Create a new project.
-//  */
-// export function createProject(token, payload) {
-//   return apiRequest("/projects", {
-//     method: "POST",
-//     headers: {
-//       ...authHeader(token),
-//     },
-//     body: JSON.stringify(payload),
-//   });
-// }
-
-// /**
-//  * Update project metadata.
-//  */
-// export function updateProject(token, projectId, payload) {
-//   return apiRequest(`/projects/${projectId}`, {
-//     method: "PATCH",
-//     headers: {
-//       ...authHeader(token),
-//     },
-//     body: JSON.stringify(payload),
-//   });
-// }
-
-// /**
-//  * Delete a project.
-//  */
-// export function deleteProject(token, projectId) {
-//   return apiRequest(`/projects/${projectId}`, {
-//     method: "DELETE",
-//     headers: {
-//       ...authHeader(token),
-//     },
-//   });
-// }
-
 class ProjectService extends BaseApi {
+  /**
+   * Constructor for the AuthService class.
+   * Calls the superclass constructor to initialize the AuthService instance.
+   */
+  constructor() {
+    super();
+  }
+
+  /**
+   * Retrieves all projects from the server.
+   * @returns {Promise<object[]>} The response data containing the list of projects.
+   */
   getProjects = async () => {
     try {
       const response = await this.instance.get("/projects");
@@ -60,6 +25,11 @@ class ProjectService extends BaseApi {
     }
   };
 
+  /**
+   * Creates a new project with the provided payload.
+   * @param {object} payload The payload containing project information.
+   * @returns {Promise<object>} The response data from the server.
+   */
   createProject = async (payload) => {
     try {
       const response = await this.instance.post("/projects", payload);
@@ -69,6 +39,12 @@ class ProjectService extends BaseApi {
     }
   };
 
+  /**
+   * Updates an existing project with the provided payload.
+   * @param {string} projectId The ID of the project to update.
+   * @param {object} payload The payload containing the updated project information.
+   * @returns {Promise<object>} The response data from the server.
+   */
   updateProject = async (projectId, payload) => {
     try {
       const response = await this.instance.patch(
@@ -81,6 +57,11 @@ class ProjectService extends BaseApi {
     }
   };
 
+  /**
+   * Deletes a project with the provided ID.
+   * @param {string} projectId The ID of the project to delete.
+   * @returns {Promise<object>} The response data from the server.
+   */
   deleteProject = async (projectId) => {
     try {
       const response = await this.instance.delete(`/projects/${projectId}`);

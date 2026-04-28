@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Render } from "@puckeditor/core";
-import { getPublishedConfiguration } from "../../services/configurationService";
+import configurationApi from "../../services/configurationService";
 import { useAppContext } from "../../context/AppContext";
 import { getDefaultLayout, puckConfig } from "../../components/puckConfig";
 import {
@@ -20,14 +20,14 @@ function normalizeConfigJson(rawConfig) {
 }
 
 function BuilderPreviewPage() {
-  const { token, selectedProjectId, selectedProject } = useAppContext();
+  const { selectedProjectId, selectedProject } = useAppContext();
   const [data, setData] = useState(getDefaultLayout());
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
     async function loadPageConfiguration() {
-      if (!token || !selectedProjectId) {
+      if (!selectedProjectId) {
         setError("Select a project first from Dashboard.");
         setIsLoading(false);
         return;
@@ -36,10 +36,8 @@ function BuilderPreviewPage() {
       try {
         setIsLoading(true);
         setError("");
-        const result = await getPublishedConfiguration(
-          token,
-          selectedProjectId,
-        );
+        const result =
+          await configurationApi.getPublishedConfiguration(selectedProjectId);
         const normalized = ensureBuilderShape(
           normalizeConfigJson(result?.configJson),
           getDefaultLayout().content,
@@ -53,7 +51,7 @@ function BuilderPreviewPage() {
     }
 
     loadPageConfiguration();
-  }, [token, selectedProjectId]);
+  }, [selectedProjectId]);
 
   return (
     <section className="space-y-4">

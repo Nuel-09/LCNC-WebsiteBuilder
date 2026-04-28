@@ -1,11 +1,7 @@
 import React, { useEffect, useState, useMemo, useRef } from "react";
 import { Puck } from "@puckeditor/core";
 import "@puckeditor/core/dist/index.css";
-import {
-  getConfiguration,
-  publishConfiguration,
-  saveConfiguration,
-} from "../services/configurationService";
+import configurationApi from "../services/configurationService";
 import { getDefaultLayout, puckConfig } from "./puckConfig";
 import {
   ensureBuilderShape,
@@ -25,7 +21,7 @@ import { createBuilderAiPlugin } from "../services/aiProvider";
  * - Error handling and user feedback
  */
 
-const BuilderEditor = ({ token, projectId, onPreviewUpdate, onPreviewPage }) => {
+const BuilderEditor = ({ projectId, onPreviewUpdate, onPreviewPage }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [initialData, setInitialData] = useState(null);
@@ -56,9 +52,9 @@ const BuilderEditor = ({ token, projectId, onPreviewUpdate, onPreviewPage }) => 
 
   // Ai plugin wiring into component
   const plugins = useMemo(() => {
-    const aiPlugin = createBuilderAiPlugin({ token, projectId });
+    const aiPlugin = createBuilderAiPlugin({ projectId });
     return aiPlugin ? [aiPlugin] : [];
-  }, [token, projectId]);
+  }, [projectId]);
 
   // Accept either object JSON or stringified JSON payloads from API.
   const parseConfigJson = (rawConfig) => {
@@ -81,7 +77,7 @@ const BuilderEditor = ({ token, projectId, onPreviewUpdate, onPreviewPage }) => 
       try {
         setIsLoading(true);
         setError(null);
-        const config = await getConfiguration(token, projectId);
+        const config = await configurationApi.getConfiguration(projectId);
 
         const parsedConfig = parseConfigJson(config.configJson);
         // Normalize full config, then isolate active-page content for Puck editor.
@@ -111,10 +107,10 @@ const BuilderEditor = ({ token, projectId, onPreviewUpdate, onPreviewPage }) => 
       }
     };
 
-    if (token && projectId) {
+    if (projectId) {
       loadConfiguration();
     }
-  }, [token, projectId]);
+  }, [projectId]);
 
   // Autosave with debounce
   useEffect(() => {
@@ -141,7 +137,7 @@ const BuilderEditor = ({ token, projectId, onPreviewUpdate, onPreviewPage }) => 
 
   // Save draft configuration to backend and set saved status.
   const handleSave = async (data, source = "manual") => {
-    if (!token || !projectId) {
+    if (!projectId) {
       setError("Select a project before saving.");
       return false;
     }
@@ -172,7 +168,7 @@ const BuilderEditor = ({ token, projectId, onPreviewUpdate, onPreviewPage }) => 
           ? mergedConfig
           : ensureBuilderShape(getDefaultLayout(), getDefaultLayout().content);
 
-      await saveConfiguration(token, projectId, safeConfigForSave);
+      await configurationApi.saveConfiguration(projectId, safeConfigForSave);
       setBuilderConfig(safeConfigForSave);
 
       setLastSaved(new Date().toLocaleTimeString());
@@ -206,7 +202,7 @@ const BuilderEditor = ({ token, projectId, onPreviewUpdate, onPreviewPage }) => 
     try {
       setIsSaving(true);
       setSaveStatus("saving");
-      await publishConfiguration(token, projectId);
+      await configurationApi.publishConfiguration(projectId);
       setLastSaved(new Date().toLocaleTimeString());
       setSaveStatus("saved");
     } catch (err) {

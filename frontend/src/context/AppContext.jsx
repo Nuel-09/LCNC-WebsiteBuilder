@@ -9,25 +9,22 @@
  */
 
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
-// import {
-//   createProject,
-//   deleteProject,
-//   projectApi.getProjects,
-//   updateProject,
-// } from "../services/projectsService";
 import authApi from "@/services/authService";
 import { toast } from "react-toastify";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import projectApi from "@/services/projectsService";
+import { getToken } from "@/lib/utils";
 
 const AppContext = createContext(null);
 
 export function AppProvider({ children }) {
   // JWT token is persisted so users remain logged in after refresh.
-  const [token, setToken] = useState(() => localStorage.getItem("token") ?? "");
   const [searchParams] = useSearchParams();
   const nav = useNavigate();
+  const [token, setToken] = useState(() => getToken());
+
   const error = searchParams.get("error");
+  console.log(error);
 
   // User profile payload returned by backend auth endpoints.
   const [user, setUser] = useState(() => {
@@ -56,27 +53,26 @@ export function AppProvider({ children }) {
   );
 
   function persistSession(nextToken, nextUser) {
-    setToken(nextToken);
     setUser(nextUser);
+    setToken(nextToken);
 
     localStorage.setItem("token", nextToken);
     localStorage.setItem("user", JSON.stringify(nextUser));
   }
 
   function clearSession() {
-    setToken("");
     setUser(null);
     setProjects([]);
     setSelectedProjectId("");
+    setToken(null);
 
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     localStorage.removeItem("selectedProjectId");
   }
 
-  async function loadProjects(currentToken = token) {
-    if (!currentToken) return;
-
+  async function loadProjects() {
+    if (!token) return;
     const result = await projectApi.getProjects();
     setProjects(result);
 
@@ -118,8 +114,6 @@ export function AppProvider({ children }) {
   }
 
   async function createNewProject(payload) {
-    if (!token) return;
-
     setIsLoading(true);
     const toastId = toast.loading("Creating project...");
 
@@ -138,7 +132,7 @@ export function AppProvider({ children }) {
   }
 
   async function updateExistingProject(projectId, payload) {
-    if (!token || !projectId) return;
+    if (!projectId) return;
 
     setIsLoading(true);
     const toastId = toast.loading("Updating project...");
@@ -159,7 +153,7 @@ export function AppProvider({ children }) {
   }
 
   async function deleteExistingProject(projectId) {
-    if (!token || !projectId) return;
+    if (!projectId) return;
 
     setIsLoading(true);
     const toastId = toast.loading("Deleting project...");
@@ -191,13 +185,11 @@ export function AppProvider({ children }) {
   }
 
   async function refreshProjects() {
-    if (!token) return;
-
     setIsLoading(true);
     const toastId = toast.loading("Refreshing projects...");
 
     try {
-      await loadProjects(token);
+      await loadProjects();
       toast.success("Projects refreshed");
     } finally {
       toast.dismiss(toastId);
@@ -222,18 +214,16 @@ export function AppProvider({ children }) {
 
   useEffect(() => {
     async function hydrateSession() {
-      if (!token) return;
-
       try {
         setIsLoading(true);
-        await loadProjects(token);
+        await loadProjects();
       } finally {
         setIsLoading(false);
       }
     }
 
     hydrateSession();
-  }, [token]);
+  }, []);
 
   useEffect(() => {
     if (error) {
