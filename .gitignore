@@ -44,6 +44,12 @@ SCHEMA_DBDIAGRAM.sql
 UPDATED_SCHEMA.prisma
 
 #dissertation files
-.tmp_interim_docx
-interim_report.docx
-interim_report.zip
+.tmp_interim_docx/
+Interim_report.docx
+Interim_report.zip
+CONFIGURATION.md
+DISSERTATION_PLAN.md
+PHASE_1_PLAN.md
+RESEARCH_DOCS_5.1_SYSTEM_ARCHITECTURE.md
+RESEARCH_DOCS_5.2_SYSTEM_INTERFACE_DESIGN.md
+defaultUser_details.md
