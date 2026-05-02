@@ -1,4 +1,10 @@
-import React, { useEffect, useState, useMemo, useRef } from "react";
+import React, {
+  useEffect,
+  useState,
+  useMemo,
+  useRef,
+  useCallback,
+} from "react";
 import { Puck } from "@puckeditor/core";
 import "@puckeditor/core/dist/index.css";
 import configurationApi from "../services/configurationService";
@@ -21,7 +27,12 @@ import { createBuilderAiPlugin } from "../services/aiProvider";
  * - Error handling and user feedback
  */
 
-const BuilderEditor = ({ projectId, onPreviewUpdate, onPreviewPage }) => {
+const BuilderEditor = ({
+  token,
+  projectId,
+  onPreviewUpdate,
+  onPreviewPage,
+}) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [initialData, setInitialData] = useState(null);
@@ -31,6 +42,14 @@ const BuilderEditor = ({ projectId, onPreviewUpdate, onPreviewPage }) => {
   const [isDirty, setIsDirty] = useState(false);
   const [saveStatus, setSaveStatus] = useState("saved"); //"saved" | "unsaved" | "saving" | "error";
   const latestDataRef = useRef(null);
+
+  const getNormalizedConfig = (input) =>
+    ensureBuilderShape(input ?? getDefaultLayout(), getDefaultLayout().content);
+
+  const mergeCurrentPageEdits = (baseConfig = builderConfig) => {
+    const currentData = latestDataRef.current ?? initialData ?? { content: [] };
+    return mergeActivePageData(getNormalizedConfig(baseConfig), currentData);
+  };
 
   const getActiveContentLength = (configLike) => {
     if (!configLike || typeof configLike !== "object") return 0;
@@ -50,11 +69,39 @@ const BuilderEditor = ({ projectId, onPreviewUpdate, onPreviewPage }) => {
   // Users will drag these onto the canvas and customize their properties
   const config = useMemo(() => puckConfig, []);
 
-  // Ai plugin wiring into component
+  // Keep a ref to builderConfig so the plugin's getPageContext can read
+  // the latest state without forcing plugin recreation on every editor update.
+  const builderConfigRef = useRef(builderConfig);
+  useEffect(() => {
+    builderConfigRef.current = builderConfig;
+  }, [builderConfig]);
+
+  const getPageContext = useCallback(() => {
+    const current = getNormalizedConfig(builderConfigRef.current);
+    const pages = Array.isArray(current.pages) ? current.pages : [];
+    const activePage =
+      pages.find((page) => page.id === current.activePageId) ?? pages[0];
+
+    return {
+      totalPages: pages.length,
+      activePageId: activePage?.id ?? "home",
+      activePageTitle: activePage?.title ?? "Home",
+      pages: pages.map((page) => ({
+        id: page.id,
+        title: page.title,
+        slug: page.slug,
+      })),
+    };
+  }, []);
+
   const plugins = useMemo(() => {
-    const aiPlugin = createBuilderAiPlugin({ projectId });
+    const aiPlugin = createBuilderAiPlugin({
+      token,
+      projectId,
+      getPageContext,
+    });
     return aiPlugin ? [aiPlugin] : [];
-  }, [projectId]);
+  }, [token, projectId, getPageContext]);
 
   // Accept either object JSON or stringified JSON payloads from API.
   const parseConfigJson = (rawConfig) => {
@@ -191,6 +238,108 @@ const BuilderEditor = ({ projectId, onPreviewUpdate, onPreviewPage }) => {
     }
   };
 
+  const handleSwitchPage = (pageId) => {
+    const merged = mergeCurrentPageEdits();
+    const current = getNormalizedConfig(merged);
+
+    if (!current.pages.some((page) => page.id === pageId)) {
+      return;
+    }
+
+    const next = {
+      ...current,
+      activePageId: pageId,
+    };
+
+    const activeData = getActivePageData(next);
+    setBuilderConfig(next);
+    setInitialData(activeData);
+    latestDataRef.current = activeData;
+    setIsDirty(true);
+    setSaveStatus("unsaved");
+  };
+
+  const handleAddPage = () => {
+    const rawTitle = window.prompt("New page title", "New Page");
+    if (!rawTitle) return;
+
+    const title = rawTitle.trim();
+    if (!title) return;
+
+    const merged = mergeCurrentPageEdits();
+    const current = getNormalizedConfig(merged);
+
+    const baseSlug =
+      title
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/(^-|-$)/g, "") || "page";
+
+    const existingIds = new Set(current.pages.map((page) => page.id));
+    const existingSlugs = new Set(current.pages.map((page) => page.slug));
+
+    let suffix = 1;
+    let candidate = baseSlug;
+    while (existingIds.has(candidate) || existingSlugs.has(candidate)) {
+      suffix += 1;
+      candidate = `${baseSlug}-${suffix}`;
+    }
+
+    const nextPage = {
+      id: candidate,
+      title,
+      slug: candidate,
+      content: [],
+    };
+
+    const next = {
+      ...current,
+      pages: [...current.pages, nextPage],
+      activePageId: nextPage.id,
+      content: [],
+    };
+
+    setBuilderConfig(next);
+    setInitialData({ content: [] });
+    latestDataRef.current = { content: [] };
+    setIsDirty(true);
+    setSaveStatus("unsaved");
+  };
+
+  const handleDeleteActivePage = () => {
+    const current = getNormalizedConfig(mergeCurrentPageEdits());
+    const pages = current.pages ?? [];
+    if (pages.length <= 1) {
+      setError("At least one page is required.");
+      return;
+    }
+
+    const activePage =
+      pages.find((page) => page.id === current.activePageId) ?? pages[0];
+
+    const confirmed = window.confirm(
+      `Delete page \"${activePage.title}\"? This cannot be undone.`,
+    );
+    if (!confirmed) return;
+
+    const remainingPages = pages.filter((page) => page.id !== activePage.id);
+    const fallbackPage = remainingPages[0];
+
+    const next = {
+      ...current,
+      pages: remainingPages,
+      activePageId: fallbackPage.id,
+      content: Array.isArray(fallbackPage.content) ? fallbackPage.content : [],
+    };
+
+    const activeData = getActivePageData(next);
+    setBuilderConfig(next);
+    setInitialData(activeData);
+    latestDataRef.current = activeData;
+    setIsDirty(true);
+    setSaveStatus("unsaved");
+  };
+
   // Publish always persists latest edits first, then creates a published snapshot.
   const handlePublish = async (dataOverride = null) => {
     const dataToPublish = dataOverride ?? latestDataRef.current ?? initialData;
@@ -319,7 +468,7 @@ const BuilderEditor = ({ projectId, onPreviewUpdate, onPreviewPage }) => {
               fontWeight: "bold",
             }}
           >
-            Preview page
+            Preview Draft
           </button>
           <button
             type="button"
@@ -341,10 +490,81 @@ const BuilderEditor = ({ projectId, onPreviewUpdate, onPreviewPage }) => {
         </div>
       </div>
 
+      {/* Multi-page controls */}
+      {builderConfig?.pages?.length ? (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "8px",
+            padding: "8px 16px",
+            borderBottom: "1px solid #ddd",
+            background: "#fafafa",
+            flexWrap: "wrap",
+          }}
+        >
+          <label style={{ fontSize: "0.85em", color: "#666" }}>Page:</label>
+          <select
+            value={
+              builderConfig.activePageId ?? builderConfig.pages[0]?.id ?? ""
+            }
+            onChange={(event) => handleSwitchPage(event.target.value)}
+            style={{
+              border: "1px solid #d5d5d5",
+              borderRadius: "4px",
+              padding: "6px 10px",
+              fontSize: "0.9em",
+            }}
+          >
+            {builderConfig.pages.map((page) => (
+              <option key={page.id} value={page.id}>
+                {page.title}
+              </option>
+            ))}
+          </select>
+
+          <button
+            type="button"
+            onClick={handleAddPage}
+            style={{
+              border: "1px solid #d5d5d5",
+              borderRadius: "4px",
+              padding: "6px 10px",
+              background: "white",
+              fontSize: "0.85em",
+              fontWeight: "bold",
+            }}
+          >
+            Add Page
+          </button>
+
+          <button
+            type="button"
+            onClick={handleDeleteActivePage}
+            disabled={(builderConfig.pages?.length ?? 0) <= 1}
+            style={{
+              border: "1px solid #d5d5d5",
+              borderRadius: "4px",
+              padding: "6px 10px",
+              background: "white",
+              fontSize: "0.85em",
+              fontWeight: "bold",
+              cursor:
+                (builderConfig.pages?.length ?? 0) <= 1
+                  ? "not-allowed"
+                  : "pointer",
+            }}
+          >
+            Delete Page
+          </button>
+        </div>
+      ) : null}
+
       {/* Puck Editor */}
       {initialData && (
         <div style={{ flex: 1, overflow: "auto" }}>
           <Puck
+            key={builderConfig?.activePageId ?? "home"}
             config={config}
             data={initialData}
             plugins={plugins}

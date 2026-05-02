@@ -17,6 +17,13 @@ const DEFAULT_THEME = {
 
 const DEFAULT_NAV_MENU = ["Home", "About", "Programs", "Contact"];
 
+function deepClone(value) {
+  if (typeof structuredClone === "function") {
+    return structuredClone(value);
+  }
+  return JSON.parse(JSON.stringify(value));
+}
+
 // Baseline props used to prefill missing values in older saved configs.
 const DEFAULT_COMPONENT_PROPS = (getDefaultLayout().content ?? []).reduce(
   (accumulator, block) => {
@@ -38,9 +45,12 @@ function sanitizeContentItems(content = []) {
       if (typeof item.type !== "string" || item.type.length === 0) return null;
 
       return {
-        ...item,
+        ...deepClone(item),
         id: item.id ?? `${item.type.toLowerCase()}-${index + 1}`,
-        props: item.props && typeof item.props === "object" ? item.props : {},
+        props:
+          item.props && typeof item.props === "object"
+            ? deepClone(item.props)
+            : {},
       };
     })
     .filter(Boolean);
@@ -85,7 +95,7 @@ export function ensureBuilderShape(rawConfig, fallbackContent = []) {
 
   const hasPages = Array.isArray(parsed.pages) && parsed.pages.length > 0;
   const legacyContent = Array.isArray(parsed.content)
-    ? parsed.content
+    ? sanitizeContentItems(parsed.content)
     : [...fallbackContent];
 
   const pages = hasPages
@@ -93,7 +103,7 @@ export function ensureBuilderShape(rawConfig, fallbackContent = []) {
         id: page?.id ?? `page-${idx + 1}`,
         title: page?.title ?? `Page ${idx + 1}`,
         slug: page?.slug ?? `page-${idx + 1}`,
-        content: Array.isArray(page?.content) ? page.content : [],
+        content: sanitizeContentItems(page?.content),
       }))
     : [{ id: "home", title: "Home", slug: "home", content: legacyContent }];
 
@@ -119,7 +129,7 @@ export function ensureBuilderShape(rawConfig, fallbackContent = []) {
     },
     pages,
     activePageId,
-    content: Array.isArray(activePage.content) ? activePage.content : [],
+    content: sanitizeContentItems(activePage.content),
   };
 }
 

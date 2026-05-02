@@ -93,6 +93,69 @@ export class AiController {
         typeof body === 'object' && body !== null && 'projectId' in body
           ? String((body as { projectId?: unknown }).projectId ?? '')
           : undefined,
+      totalPages:
+        typeof body === 'object' &&
+        body !== null &&
+        'pageContext' in body &&
+        Array.isArray(
+          (body as { pageContext?: { pages?: unknown[] } }).pageContext?.pages,
+        )
+          ? (body as { pageContext?: { pages?: unknown[] } }).pageContext?.pages
+              ?.length
+          : undefined,
+      activePageId:
+        typeof body === 'object' &&
+        body !== null &&
+        'pageContext' in body &&
+        typeof (
+          body as {
+            pageContext?: { activePageId?: unknown };
+          }
+        ).pageContext?.activePageId === 'string'
+          ? String(
+              (
+                body as {
+                  pageContext?: { activePageId?: unknown };
+                }
+              ).pageContext?.activePageId,
+            )
+          : undefined,
+      activePageTitle:
+        typeof body === 'object' &&
+        body !== null &&
+        'pageContext' in body &&
+        typeof (
+          body as {
+            pageContext?: { activePageTitle?: unknown };
+          }
+        ).pageContext?.activePageTitle === 'string'
+          ? String(
+              (
+                body as {
+                  pageContext?: { activePageTitle?: unknown };
+                }
+              ).pageContext?.activePageTitle,
+            )
+          : undefined,
+      pageSlugs:
+        typeof body === 'object' &&
+        body !== null &&
+        'pageContext' in body &&
+        Array.isArray(
+          (body as { pageContext?: { pages?: unknown[] } }).pageContext?.pages,
+        )
+          ? (
+              (
+                body as {
+                  pageContext?: {
+                    pages?: Array<{ slug?: unknown }>;
+                  };
+                }
+              ).pageContext?.pages ?? []
+            )
+              .map((page) => (typeof page.slug === 'string' ? page.slug : null))
+              .filter((slug): slug is string => Boolean(slug))
+          : undefined,
     });
 
     // Mirror upstream status/headers/body to client while skipping hop-by-hop headers.

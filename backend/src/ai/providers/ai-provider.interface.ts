@@ -11,6 +11,10 @@ export const AI_PROVIDER = Symbol('AI_PROVIDER');
 export type AiChatContext = {
   userId: string;
   projectId?: string;
+  totalPages?: number;
+  activePageId?: string;
+  activePageTitle?: string;
+  pageSlugs?: string[];
 };
 
 /**

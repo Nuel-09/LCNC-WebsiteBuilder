@@ -46,6 +46,9 @@ const createPrismaMock = () => {
   const users: UserRecord[] = [];
   const projects: ProjectRecord[] = [];
   const configurations: ConfigurationRecord[] = [];
+  let userCounter = 0;
+  let projectCounter = 0;
+  let configurationCounter = 0;
 
   const now = () => new Date();
 
@@ -66,7 +69,7 @@ const createPrismaMock = () => {
       }),
       create: jest.fn(({ data }: any) => {
         const user: UserRecord = {
-          id: `u_${users.length + 1}`,
+          id: `u_${++userCounter}`,
           email: data.email,
           passwordHash: data.passwordHash,
           fullName: data.fullName ?? null,
@@ -79,7 +82,7 @@ const createPrismaMock = () => {
     project: {
       create: jest.fn(({ data }: any) => {
         const project: ProjectRecord = {
-          id: `p_${projects.length + 1}`,
+          id: `p_${++projectCounter}`,
           userId: data.userId,
           projectName: data.projectName,
           schoolType: data.schoolType,
@@ -119,6 +122,12 @@ const createPrismaMock = () => {
         if (index >= 0) {
           projects.splice(index, 1);
         }
+        const configurationIndex = configurations.findIndex(
+          (item) => item.projectId === where.id,
+        );
+        if (configurationIndex >= 0) {
+          configurations.splice(configurationIndex, 1);
+        }
         return Promise.resolve({ id: where.id });
       }),
     },
@@ -137,7 +146,7 @@ const createPrismaMock = () => {
 
         if (existingIndex === -1) {
           const created: ConfigurationRecord = {
-            id: `cfg_${configurations.length + 1}`,
+            id: `cfg_${++configurationCounter}`,
             projectId: create.projectId,
             configJson: create.configJson,
             createdAt: now(),
@@ -434,5 +443,54 @@ describe('API Integration (AppModule + Controllers + Guards)', () => {
       .expect(200);
 
     expect(projectsAfterDelete.body).toHaveLength(0);
+  });
+
+  it('serves the public live site only after publish', async () => {
+    const token = await signupAndLogin('public.site@school.com');
+
+    const project = await request(app.getHttpServer())
+      .post('/projects')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ projectName: 'Public Site Project', schoolType: 'primary' })
+      .expect(201);
+
+    const projectId = project.body.id;
+
+    await request(app.getHttpServer())
+      .get(`/public/projects/${projectId}/published`)
+      .expect(404);
+
+    await request(app.getHttpServer())
+      .put(`/projects/${projectId}/configuration`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        configJson: {
+          site: { theme: { primaryColor: '#222222' } },
+          pages: [
+            {
+              id: 'home',
+              title: 'Home',
+              slug: 'home',
+              content: [],
+            },
+          ],
+          activePageId: 'home',
+        },
+      })
+      .expect(200);
+
+    await request(app.getHttpServer())
+      .post(`/projects/${projectId}/configuration/publish`)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(201);
+
+    const publicSite = await request(app.getHttpServer())
+      .get(`/public/projects/${projectId}/published`)
+      .expect(200);
+
+    expect(publicSite.body.projectId).toBe(projectId);
+    expect(publicSite.body.projectName).toBe('Public Site Project');
+    expect(publicSite.body.configJson).toBeDefined();
+    expect(publicSite.body.publishedAt).toBeDefined();
   });
 });

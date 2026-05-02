@@ -52,7 +52,21 @@ export class PuckCloudProvider implements AiProvider {
     // Append runtime identity hints so responses stay scoped to the active user/project.
     const runtimeContext = `${baseContext}\nUser ID: ${context.userId}${
       context.projectId ? `\nProject ID: ${context.projectId}` : ''
-    }`;
+    }${
+      typeof context.totalPages === 'number'
+        ? `\nTotal Pages: ${context.totalPages}`
+        : ''
+    }${
+      context.activePageId ? `\nActive Page ID: ${context.activePageId}` : ''
+    }${
+      context.activePageTitle
+        ? `\nActive Page Title: ${context.activePageTitle}`
+        : ''
+    }${
+      context.pageSlugs && context.pageSlugs.length > 0
+        ? `\nAvailable Page Slugs: ${context.pageSlugs.join(', ')}`
+        : ''
+    }\nThis builder supports multiple pages. Do not claim that only a single page is supported.`;
 
     try {
       const puckHandler = await this.getPuckHandler();

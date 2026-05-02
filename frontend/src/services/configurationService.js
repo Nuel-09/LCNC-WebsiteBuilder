@@ -81,6 +81,20 @@ class ConfigurationService extends BaseApi {
   };
 
   /**
+   * Retrieves the public live site configuration for a published project.
+   */
+  getPublicPublishedConfiguration = async (projectId) => {
+    try {
+      const response = await this.instance.get(
+        `/public/projects/${projectId}/published`,
+      );
+      return response.data;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  /**
    * Retrieves the preview mock data for a project with the provided ID.
    * @param {string} projectId The ID of the project.
    * @returns {Promise<object>} The response data containing the preview mock data.

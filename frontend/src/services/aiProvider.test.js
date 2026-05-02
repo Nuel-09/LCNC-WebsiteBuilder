@@ -32,7 +32,7 @@ describe("createBuilderAiPlugin", () => {
       body: { chatId: "", trigger: "submit-message" },
     });
 
-    expect(prepared.headers.get("Authorization")).toBe("Bearer jwt-token");
+    expect(prepared.headers.Authorization).toBe("Bearer jwt-token");
     expect(prepared.body.projectId).toBe("p1");
     expect(prepared.body.chatId).toBeUndefined();
     expect(prepared.credentials).toBe("same-origin");

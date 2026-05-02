@@ -4,7 +4,7 @@ import { useAppContext } from "../../context/AppContext";
 
 function BuilderPage() {
   const navigate = useNavigate();
-  const { selectedProjectId, selectedProject } = useAppContext();
+  const { token, selectedProjectId, selectedProject } = useAppContext();
 
   return (
     <section className="space-y-4">
@@ -27,8 +27,9 @@ function BuilderPage() {
       {selectedProjectId ? (
         <div className="rounded-xl border bg-card p-0">
           <BuilderEditor
+            token={token}
             projectId={selectedProjectId}
-            onPreviewPage={() => navigate("/builder/view")}
+            onPreviewPage={() => navigate("/builder/preview")}
           />
         </div>
       ) : (

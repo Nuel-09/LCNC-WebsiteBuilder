@@ -407,23 +407,68 @@ export class ConfigurationsService {
     });
 
     if (!config) {
-      return {
-        projectId,
-        configJson: this.getDefaultBuilderConfig(),
-        publishedAt: null,
-        usingDraftFallback: true,
-      };
+      throw new NotFoundException(
+        'No published configuration found. Publish your draft first.',
+      );
     }
 
     const stored = this.normalizeStoredConfiguration(
       config.configJson as Prisma.InputJsonValue,
     );
 
+    if (!stored.published || !stored.publishedAt) {
+      throw new NotFoundException(
+        'No published configuration found. Publish your draft first.',
+      );
+    }
+
     return {
       ...config,
-      configJson: stored.published ?? stored.draft,
+      configJson: stored.published,
       publishedAt: stored.publishedAt,
-      usingDraftFallback: stored.published === null,
+    };
+  }
+
+  /**
+   * Return the published snapshot for the public site route.
+   * This is intentionally read-only and does not require authentication.
+   */
+  async getPublishedSiteByProject(projectId: string) {
+    const project = await this.prisma.project.findUnique({
+      where: { id: projectId },
+      select: { id: true, projectName: true, schoolType: true },
+    });
+
+    if (!project) {
+      throw new NotFoundException('Project not found');
+    }
+
+    const config = await this.prisma.configuration.findUnique({
+      where: { projectId },
+    });
+
+    if (!config) {
+      throw new NotFoundException(
+        'No published configuration found. Publish your draft first.',
+      );
+    }
+
+    const stored = this.normalizeStoredConfiguration(
+      config.configJson as Prisma.InputJsonValue,
+    );
+
+    if (!stored.published || !stored.publishedAt) {
+      throw new NotFoundException(
+        'No published configuration found. Publish your draft first.',
+      );
+    }
+
+    return {
+      projectId: project.id,
+      projectName: project.projectName,
+      schoolType: project.schoolType,
+      configJson: stored.published,
+      publishedAt: stored.publishedAt,
     };
   }
 

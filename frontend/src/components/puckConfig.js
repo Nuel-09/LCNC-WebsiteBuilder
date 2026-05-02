@@ -52,6 +52,7 @@ export function getDefaultLayout() {
       {
         type: "Header",
         props: {
+          sectionId: "home",
           title: "EduFlow",
           subtitle: "Academy",
           menuItems: "Home,About,Programs,Why Us,Contact",
@@ -69,6 +70,7 @@ export function getDefaultLayout() {
       {
         type: "Hero",
         props: {
+          sectionId: "home",
           heading: "Shaping the Leaders of Tomorrow",
           description:
             "A world-class learning environment where every student is empowered to discover their potential, build character, and achieve excellence.",
@@ -92,6 +94,7 @@ export function getDefaultLayout() {
       {
         type: "About",
         props: {
+          sectionId: "about",
           title: "About Our School",
           description:
             "We provide a safe and inclusive environment where students build confidence, leadership and academic success.",
@@ -107,6 +110,7 @@ export function getDefaultLayout() {
       {
         type: "Programs",
         props: {
+          sectionId: "programs",
           title: "Academic Programs",
           items: [
             {
@@ -134,6 +138,7 @@ export function getDefaultLayout() {
       {
         type: "Announcement",
         props: {
+          sectionId: "news",
           title: "Latest Updates",
           items: [
             {
@@ -153,6 +158,7 @@ export function getDefaultLayout() {
       {
         type: "AdmissionsCta",
         props: {
+          sectionId: "admissions",
           heading: "Admissions Open for 2026/2027",
           buttonText: "Start Application",
           buttonUrl: "/admissions",
@@ -167,6 +173,7 @@ export function getDefaultLayout() {
       {
         type: "Contact",
         props: {
+          sectionId: "contact",
           sectionTitle: "Contact Us",
           email: "contact@school.com",
           phone: "+1 (555) 000-0000",
@@ -182,6 +189,7 @@ export function getDefaultLayout() {
       {
         type: "Footer",
         props: {
+          sectionId: "footer",
           copyrightText: "© 2026 Your School. All rights reserved.",
           bgColor: "#333333",
           textColor: "#ffffff",

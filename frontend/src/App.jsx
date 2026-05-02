@@ -8,6 +8,7 @@ import BuilderPage from "./pages/protected_Pages/BuilderPage";
 import BuilderPreviewPage from "./pages/protected_Pages/BuilderPreviewPage";
 import DashboardPage from "./pages/protected_Pages/DashboardPage";
 import SettingsPage from "./pages/protected_Pages/SettingsPage";
+import PublishedSitePage from "./pages/public_Pages/PublishedSitePage";
 
 function App() {
   return (
@@ -15,12 +16,24 @@ function App() {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/auth" element={<AuthPage />} />
+        <Route path="/site/:projectId" element={<PublishedSitePage />} />
 
         <Route element={<ProtectedRoute />}>
           <Route element={<ProtectedLayout />}>
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/builder" element={<BuilderPage />} />
-            <Route path="/builder/view" element={<BuilderPreviewPage />} />
+            <Route
+              path="/builder/preview"
+              element={<BuilderPreviewPage mode="draft" />}
+            />
+            <Route
+              path="/builder/published"
+              element={<BuilderPreviewPage mode="published" />}
+            />
+            <Route
+              path="/builder/view"
+              element={<BuilderPreviewPage mode="draft" />}
+            />
             <Route path="/settings" element={<SettingsPage />} />
           </Route>
         </Route>

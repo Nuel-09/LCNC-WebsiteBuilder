@@ -11,9 +11,16 @@ const AI_HOST = import.meta.env.VITE_PUCK_AI_HOST ?? `${API_BASE_URL}/ai/chat`;
  * Builder AI plugin factory.
  * Keep this thin adapter boundary so swapping AI providers later only touches this file.
  */
-export function createBuilderAiPlugin({ projectId }) {
+function toBearerToken(rawToken) {
+  if (!rawToken) return null;
+  return rawToken.startsWith("Bearer ") ? rawToken : `Bearer ${rawToken}`;
+}
+
+export function createBuilderAiPlugin({ token, projectId, getPageContext }) {
   const isAiEnabled = import.meta.env.VITE_ENABLE_PUCK_AI !== "false";
-  if (!isAiEnabled || !projectId) {
+  const authHeader = toBearerToken(token) ?? baseApi.setAuthorization();
+
+  if (!isAiEnabled || !projectId || !authHeader) {
     return null;
   }
 
@@ -22,18 +29,18 @@ export function createBuilderAiPlugin({ projectId }) {
     prepareRequest: async (opts = {}) => {
       // Normalize incoming headers (can be plain object or Headers instance)
       // and force Authorization so AI requests always pass JwtAuthGuard.
-      const auth = {
-        Authorization: baseApi.setAuthorization(),
+      const headers = {
+        ...(opts.headers ?? {}),
+        Authorization: authHeader,
       };
-      let headers;
-      if (auth.Authorization) {
-        headers = { ...opts.headers, ...auth } ?? {};
-        console.log(headers);
-      }
+
+      const pageContext =
+        typeof getPageContext === "function" ? getPageContext() : undefined;
 
       const body = {
         ...(opts.body ?? {}),
         projectId,
+        pageContext,
       };
 
       // Puck Cloud treats empty chatId as an invalid conversation id.

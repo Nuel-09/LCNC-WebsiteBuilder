@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigurationsController } from './configurations.controller';
 import { ConfigurationsService } from './configurations.service';
+import { PublicSiteController } from './public-site.controller';
 import { AuthModule } from '../auth/auth.module';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
@@ -11,7 +12,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
  */
 @Module({
   imports: [AuthModule],
-  controllers: [ConfigurationsController],
+  controllers: [ConfigurationsController, PublicSiteController],
   providers: [ConfigurationsService, JwtAuthGuard],
 })
 export class ConfigurationsModule {}

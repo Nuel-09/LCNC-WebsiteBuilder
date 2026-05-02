@@ -165,10 +165,30 @@ function DashboardPage() {
               </button>
               <button
                 type="button"
-                onClick={() => navigate("/builder/view")}
+                onClick={() => navigate("/builder/preview")}
+                className="rounded-md border px-3 py-2 text-sm"
+              >
+                Open Draft Preview
+              </button>
+              <button
+                type="button"
+                onClick={() => navigate("/builder/published")}
                 className="rounded-md border px-3 py-2 text-sm"
               >
                 Open Published Preview
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  if (!selectedProjectId) return;
+                  window.open(
+                    `${window.location.origin}/site/${selectedProjectId}`,
+                    "_blank",
+                  );
+                }}
+                className="rounded-md border px-3 py-2 text-sm"
+              >
+                Open Live Site
               </button>
             </div>
           ) : null}
@@ -256,11 +276,33 @@ function DashboardPage() {
                           type="button"
                           onClick={() => {
                             selectProject(project.id);
-                            navigate("/builder/view");
+                            navigate("/builder/preview");
                           }}
                           className="rounded-md border px-3 py-2 text-sm"
                         >
-                          Preview
+                          Draft
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            selectProject(project.id);
+                            navigate("/builder/published");
+                          }}
+                          className="rounded-md border px-3 py-2 text-sm"
+                        >
+                          Published
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            window.open(
+                              `${window.location.origin}/site/${project.id}`,
+                              "_blank",
+                            )
+                          }
+                          className="rounded-md border px-3 py-2 text-sm"
+                        >
+                          Live Site
                         </button>
                         <button
                           type="button"

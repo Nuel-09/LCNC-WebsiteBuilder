@@ -26,6 +26,18 @@ function toColorInputValue(value) {
   return "#000000";
 }
 
+function toAnchorId(value, fallback = "section") {
+  if (typeof value !== "string") return fallback;
+
+  const normalized = value
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+
+  return normalized || fallback;
+}
+
 /**
  * Reusable custom field that provides a visual picker plus manual hex input.
  */
@@ -100,6 +112,14 @@ export const Header = ({
     .map((item) => item.trim())
     .filter(Boolean);
 
+  const navigationTargets = {
+    Home: "home",
+    About: "about",
+    Programs: "programs",
+    "Why Us": "about",
+    Contact: "contact",
+  };
+
   const isLeft = align === "left";
 
   const isSticky = sticky === true || sticky === "true";
@@ -149,7 +169,7 @@ export const Header = ({
           {links.map((label) => (
             <a
               key={label}
-              href={`#${label.toLowerCase().replace(/\s+/g, "-")}`}
+              href={`#${navigationTargets[label] ?? toAnchorId(label)}`}
               style={{
                 color: textColor,
                 textDecoration: "none",
@@ -213,6 +233,7 @@ Header.puckFields = {
 
 // Hero Section - Main call-to-action banner
 export const Hero = ({
+  sectionId = "home",
   heading = "Shaping the Leaders of Tomorrow",
   description = "A world-class learning environment where every student is empowered to discover potential.",
   buttonText = "Explore Programs",
@@ -236,10 +257,12 @@ export const Hero = ({
 
   return (
     <section
+      id={toAnchorId(sectionId, "home")}
       style={{
         background: `linear-gradient(135deg, ${bgColor} 0%, #2f36b8 100%)`,
         color: textColor,
         padding: `${verticalPadding}px 20px`,
+        scrollMarginTop: "96px",
       }}
     >
       <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
@@ -401,6 +424,7 @@ Hero.puckFields = {
 
 // About Component - School mission/overview
 export const About = ({
+  sectionId = "about",
   title = "About Our School",
   description = "We are committed to nurturing excellence, discipline and innovation.",
   bgColor = "#ffffff",
@@ -412,7 +436,12 @@ export const About = ({
   align = "center",
 }) => (
   <section
-    style={{ padding: `${verticalPadding}px 20px`, background: bgColor }}
+    id={toAnchorId(sectionId, "about")}
+    style={{
+      padding: `${verticalPadding}px 20px`,
+      background: bgColor,
+      scrollMarginTop: "96px",
+    }}
   >
     <div style={{ maxWidth: "900px", margin: "0 auto", textAlign: align }}>
       <h3
@@ -473,6 +502,7 @@ About.puckFields = {
 
 // Programs Component - Academic offerings/cards
 export const Programs = ({
+  sectionId = "programs",
   title = "Academic Programs",
   items = [
     {
@@ -497,7 +527,12 @@ export const Programs = ({
   verticalPadding = 48,
 }) => (
   <section
-    style={{ padding: `${verticalPadding}px 20px`, background: bgColor }}
+    id={toAnchorId(sectionId, "programs")}
+    style={{
+      padding: `${verticalPadding}px 20px`,
+      background: bgColor,
+      scrollMarginTop: "96px",
+    }}
   >
     <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
       <h3
@@ -574,6 +609,7 @@ Programs.puckFields = {
 
 // Announcement Component - News/updates section
 export const Announcement = ({
+  sectionId = "news",
   title = "Latest News",
   items = [
     {
@@ -595,10 +631,12 @@ export const Announcement = ({
   titleSize = 28,
 }) => (
   <section
+    id={toAnchorId(sectionId, "news")}
     style={{
       padding: `${verticalPadding}px 20px`,
       background: bgColor,
       borderLeft: `4px solid ${accentColor}`,
+      scrollMarginTop: "96px",
     }}
   >
     <h3
@@ -672,6 +710,7 @@ Announcement.puckFields = {
 
 // Admissions CTA Component
 export const AdmissionsCta = ({
+  sectionId = "admissions",
   heading = "Admissions Open for New Session",
   buttonText = "Apply Now",
   buttonUrl = "/admissions",
@@ -683,11 +722,13 @@ export const AdmissionsCta = ({
   verticalPadding = 44,
 }) => (
   <section
+    id={toAnchorId(sectionId, "admissions")}
     style={{
       padding: `${verticalPadding}px 20px`,
       background: `linear-gradient(135deg, ${bgColor} 0%, #4338ca 100%)`,
       color: textColor,
       textAlign: "center",
+      scrollMarginTop: "96px",
     }}
   >
     <h3 style={{ margin: "0 0 16px 0", fontSize: `${headingSize}px` }}>
@@ -737,6 +778,7 @@ AdmissionsCta.puckFields = {
 
 // Contact Component - Contact information section
 export const Contact = ({
+  sectionId = "contact",
   sectionTitle = "Contact Us",
   email = "info@school.com",
   phone = "+1 (555) 123-4567",
@@ -749,10 +791,12 @@ export const Contact = ({
   verticalPadding = 40,
 }) => (
   <section
+    id={toAnchorId(sectionId, "contact")}
     style={{
       padding: `${verticalPadding}px 20px`,
       background: bgColor,
       textAlign: "center",
+      scrollMarginTop: "96px",
     }}
   >
     <h3 style={{ color: titleColor, marginBottom: "30px" }}>{sectionTitle}</h3>
@@ -835,17 +879,20 @@ Contact.puckFields = {
 
 // Footer Component - Footer section
 export const Footer = ({
+  sectionId = "footer",
   copyrightText = "(c) 2026 School Name. All rights reserved.",
   bgColor = "#333333",
   textColor = "#ffffff",
   verticalPadding = 30,
 }) => (
   <footer
+    id={toAnchorId(sectionId, "footer")}
     style={{
       background: bgColor,
       color: textColor,
       padding: `${verticalPadding}px 20px`,
       textAlign: "center",
+      scrollMarginTop: "96px",
     }}
   >
     <p style={{ margin: 0 }}>{copyrightText}</p>
