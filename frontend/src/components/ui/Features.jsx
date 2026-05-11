@@ -81,7 +81,7 @@ export function Features() {
                 className="group p-6 rounded-2xl border border-gray-200 hover:border-purple-300 hover:shadow-xl transition-all duration-300 bg-white"
               >
                 <div
-                  className={`size-14 rounded-xl bg-gradient-to-br ${feature.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}
+                  className={`size-14 rounded-xl bg-linear-to-br ${feature.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}
                 >
                   <feature.icon className="size-7 text-white" />
                 </div>

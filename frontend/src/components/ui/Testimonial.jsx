@@ -55,7 +55,7 @@ export function Testimonial() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
-              className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-2xl p-8 relative"
+              className="bg-linear-to-br from-purple-50 to-blue-50 rounded-2xl p-8 relative"
             >
               <Quote className="size-10 text-purple-300 mb-4" />
               <p className="text-gray-700 leading-relaxed pb-6 italic">
