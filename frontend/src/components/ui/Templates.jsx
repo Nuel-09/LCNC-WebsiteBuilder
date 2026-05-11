@@ -74,7 +74,7 @@ export function Templates() {
                 transition={{ delay: index * 0.1 }}
                 className="group relative overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer"
               >
-                <div className="absolute inset-0 bg-gradient-to-br from-black/60 to-black/40 z-10"></div>
+                <div className="absolute inset-0 bg-linear-to-br from-black/60 to-black/40 z-10"></div>
                 <img
                   src={template.image}
                   alt={template.name}
@@ -83,7 +83,7 @@ export function Templates() {
 
                 <div className="absolute inset-0 z-20 p-8 flex flex-col justify-end">
                   <div
-                    className={`size-14 rounded-xl bg-gradient-to-br ${template.color} flex items-center justify-center mb-4`}
+                    className={`size-14 rounded-xl bg-linear-to-br ${template.color} flex items-center justify-center mb-4`}
                   >
                     <template.icon className="size-7 text-white" />
                   </div>
@@ -104,7 +104,7 @@ export function Templates() {
           viewport={{ once: true }}
           className="text-center mt-12"
         >
-          <button className="px-8 py-4 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:shadow-xl transition-all">
+          <button className="px-8 py-4 bg-linear-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:shadow-xl transition-all">
             View All Templates
           </button>
         </motion.div> */}

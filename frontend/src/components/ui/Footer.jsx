@@ -8,7 +8,7 @@ export function Footer() {
         <div className="grid md:grid-cols-4 gap-8 mb-8">
           <div>
             <div className="flex items-center gap-2 mb-4">
-              <div className="size-8 bg-gradient-to-br from-purple-600 to-blue-600 rounded-lg"></div>
+              <div className="size-8 bg-linear-to-br from-purple-600 to-blue-600 rounded-lg"></div>
               <span className="text-xl font-semibold text-white">
                 SchoolBuilder AI
               </span>

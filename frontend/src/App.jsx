@@ -6,8 +6,12 @@ import AuthPage from "./pages/public_Pages/AuthPage";
 import LandingPage from "./pages/public_Pages/LandingPage";
 import BuilderPage from "./pages/protected_Pages/BuilderPage";
 import BuilderPreviewPage from "./pages/protected_Pages/BuilderPreviewPage";
-import DashboardPage from "./pages/protected_Pages/DashboardPage";
 import SettingsPage from "./pages/protected_Pages/SettingsPage";
+import OverviewPage from "./pages/protected_Pages/OverviewPage";
+import ProjectsPage from "./pages/protected_Pages/ProjectsPage";
+import TemplatesPage from "./pages/protected_Pages/TemplatesPage";
+import TeamPage from "./pages/protected_Pages/TeamPage";
+import AnalyticsPage from "./pages/protected_Pages/AnalyticsPage";
 import PublishedSitePage from "./pages/public_Pages/PublishedSitePage";
 
 function App() {
@@ -20,22 +24,21 @@ function App() {
 
         <Route element={<ProtectedRoute />}>
           <Route element={<ProtectedLayout />}>
-            <Route path="/dashboard" element={<DashboardPage />} />
-            <Route path="/builder" element={<BuilderPage />} />
-            <Route
-              path="/builder/preview"
-              element={<BuilderPreviewPage mode="draft" />}
-            />
-            <Route
+            <Route path="/overview" element={<OverviewPage />} />
+            <Route path="/projects" element={<ProjectsPage />} />
+            <Route path="/templates" element={<TemplatesPage />} />
+            <Route path="/design" element={<BuilderPage />} />
+            <Route path="/team" element={<TeamPage />} />
+            <Route path="/analytics" element={<AnalyticsPage />} />
+            {/* <Route path="/builder" element={<BuilderPage />} /> */}
+            {/* <Route
               path="/builder/published"
               element={<BuilderPreviewPage mode="published" />}
-            />
-            <Route
-              path="/builder/view"
-              element={<BuilderPreviewPage mode="draft" />}
-            />
+            /> */}
+
             <Route path="/settings" element={<SettingsPage />} />
           </Route>
+          <Route path="/view" element={<BuilderPreviewPage />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />

@@ -14,7 +14,7 @@ function LandingPage() {
   const { token } = useAppContext();
 
   if (token) {
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to="/overview" replace />;
   }
 
   return (

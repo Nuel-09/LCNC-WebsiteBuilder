@@ -1,0 +1,39 @@
+[
+  {
+    "iconName": "LayoutDashboard",
+    "label": "Overview",
+    "view": "overview",
+    "badge": null
+  },
+  {
+    "iconName": "Globe",
+    "label": "My Projects",
+    "view": "projects",
+    "badge": "12"
+  },
+  {
+    "iconName": "Palette",
+    "label": "Design System",
+    "view": "design",
+    "badge": null
+  },
+  {
+    "iconName": "Layout",
+    "label": "Templates",
+    "view": "templates",
+    "badge": null
+  },
+  { "iconName": "Users", "label": "Team", "view": "team", "badge": null },
+  {
+    "iconName": "BarChart3",
+    "label": "Analytics",
+    "view": "analytics",
+    "badge": null
+  },
+  {
+    "iconName": "Settings",
+    "label": "Settings",
+    "view": "settings",
+    "badge": null
+  }
+]
