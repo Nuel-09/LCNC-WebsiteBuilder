@@ -11,6 +11,7 @@ import {
   Eye,
   EyeOff,
   Chrome,
+  ArrowLeft,
 } from "lucide-react";
 import { useAppContext } from "@/context/AppContext";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
@@ -18,7 +19,7 @@ function AuthPage() {
   const { token, authenticate, isLoading } = useAppContext();
   const navigate = useNavigate();
   const location = useLocation();
-  const [activeTab, setActiveTab] = useState("signup");
+  const [activeTab, setActiveTab] = useState(location.state?.from || "signup");
   const [showPassword, setShowPassword] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState(0);
   const [formData, setFormData] = useState({
@@ -27,6 +28,11 @@ function AuthPage() {
     email: "",
     password: "",
   });
+
+  const handleToggle = (tab) => {
+    setActiveTab(tab);
+    navigate(`/auth`, { replace: true, state: { from: tab } });
+  };
 
   const handlePasswordChange = (value) => {
     setFormData({ ...formData, password: value });
@@ -71,7 +77,7 @@ function AuthPage() {
     const success = await authenticate(activeTab, payload);
 
     if (success) {
-      const destination = location.state?.from?.pathname ?? "/dashboard";
+      const destination = location.state?.from?.pathname ?? "/overview";
       navigate(destination, { replace: true });
     }
   }
@@ -85,12 +91,22 @@ function AuthPage() {
       : !formData.email || !formData.password;
 
   if (token) {
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to="/overview" replace />;
   }
 
   return (
     <div className="min-h-screen relative flex items-center justify-center px-4 py-12 overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-blue-50 to-white"></div>
+      <div className="absolute inset-0 bg-linear-to-br from-purple-50 via-blue-50 to-white"></div>
+
+      <button
+        onClick={() => navigate("/", { replace: true })}
+        className="fixed top-4 left-4 md:top-6 md:left-6 flex items-center gap-2 px-3 md:px-4 py-2 bg-white/90 backdrop-blur-sm hover:bg-white rounded-lg shadow-md cursor-pointer hover:scale-[1.05] transition-all group z-50"
+      >
+        <ArrowLeft className="size-4 text-purple-600 group-hover:-translate-x-1 transition-transform" />
+        <span className="text-xs md:text-sm font-medium text-gray-700">
+          Back to Home
+        </span>
+      </button>
 
       <div className="absolute top-20 right-10 size-96 bg-purple-300/20 rounded-full blur-3xl"></div>
       <div className="absolute bottom-20 left-10 size-96 bg-blue-300/20 rounded-full blur-3xl"></div>
@@ -110,7 +126,7 @@ function AuthPage() {
 
           <h1 className="text-5xl font-bold mb-6 leading-tight">
             Start Building Your{" "}
-            <span className="bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
               School's Digital Presence
             </span>
           </h1>
@@ -135,7 +151,7 @@ function AuthPage() {
                 transition={{ duration: 0.4, delay: 0.2 + index * 0.1 }}
                 className="flex items-center gap-3"
               >
-                <div className="size-8 rounded-full bg-gradient-to-r from-purple-600 to-blue-600 flex items-center justify-center flex-shrink-0">
+                <div className="size-8 rounded-full bg-linear-to-r from-purple-600 to-blue-600 flex items-center justify-center shrink-0">
                   <Check className="size-4 text-white" />
                 </div>
                 <span className="text-gray-700">{feature}</span>
@@ -167,7 +183,7 @@ function AuthPage() {
           <div className="bg-white rounded-2xl shadow-2xl p-8 border border-gray-100 mb-6">
             <div className="flex gap-2 mb-8 bg-gray-100 p-1 rounded-xl">
               <button
-                onClick={() => setActiveTab("login")}
+                onClick={() => handleToggle("login")}
                 className={`flex-1 py-3 rounded-lg transition-all ${
                   activeTab === "login"
                     ? "bg-white shadow-md text-purple-600"
@@ -177,7 +193,7 @@ function AuthPage() {
                 Login
               </button>
               <button
-                onClick={() => setActiveTab("signup")}
+                onClick={() => handleToggle("signup")}
                 className={`flex-1 py-3 rounded-lg transition-all ${
                   activeTab === "signup"
                     ? "bg-white shadow-md text-purple-600"
@@ -231,7 +247,7 @@ function AuthPage() {
                       </label>
                       <button
                         type="button"
-                        className="text-sm text-purple-600 hover:text-purple-700"
+                        className="text-sm text-purple-600 hover:text-purple-700 cursor-pointer hover:underline hover:decoration-2 transition"
                       >
                         Forgot?
                       </button>
@@ -249,7 +265,7 @@ function AuthPage() {
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 cursor-pointer"
                       >
                         {showPassword ? (
                           <EyeOff className="size-5" />
@@ -273,7 +289,7 @@ function AuthPage() {
 
                   <button
                     type="submit"
-                    className="w-full py-4 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:shadow-xl transition-all flex items-center justify-center gap-2 group disabled:opacity-50 disabled:pointer-events-none"
+                    className="w-full py-4 bg-linear-to-r from-purple-600 to-blue-600 text-white rounded-lg transition-all flex items-center justify-center gap-2 group disabled:opacity-50 disabled:pointer-events-none cursor-pointer hover:bg-linear-to-r hover:from-purple-700 hover:to-blue-700"
                     disabled={isLoading || isDisabled}
                   >
                     Sign In to Dashboard
@@ -293,7 +309,7 @@ function AuthPage() {
 
                   <button
                     type="button"
-                    className="w-full py-3 bg-white border-2 border-gray-200 rounded-lg hover:border-purple-600 transition-colors flex items-center justify-center gap-3"
+                    className="w-full py-3 bg-white border-2 border-gray-200 rounded-lg hover:border-purple-600 transition-colors flex items-center justify-center gap-3 cursor-pointer"
                   >
                     <Chrome className="size-5 text-gray-600" />
                     <span className="text-gray-700">Continue with Google</span>
@@ -460,7 +476,7 @@ function AuthPage() {
 
                   <button
                     type="submit"
-                    className="w-full py-4 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:bg-gradient-to-r hover:from-purple-700 hover:to-blue-700 transition-all flex items-center justify-center gap-2 group cursor-pointer disabled:opacity-50 disabled:pointer-events-none"
+                    className="w-full py-4 bg-linear-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:bg-linear-to-r hover:from-purple-700 hover:to-blue-700 transition-all flex items-center justify-center gap-2 group cursor-pointer disabled:opacity-50 disabled:pointer-events-none"
                     disabled={passwordStrength < 3 || isLoading || isDisabled}
                   >
                     Create Account

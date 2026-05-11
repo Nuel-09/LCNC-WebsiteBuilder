@@ -64,8 +64,8 @@ function PublishedSitePage() {
   }, [projectId]);
 
   return (
-    <section className="space-y-4 bg-slate-50 px-4 py-6">
-      <div className="rounded-2xl border bg-white p-4 shadow-sm">
+    <section className="space-y-4 bg-slate-50">
+      {/* <div className="rounded-2xl border bg-white p-4 shadow-sm">
         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
           Live website
         </p>
@@ -77,7 +77,7 @@ function PublishedSitePage() {
             Published at {new Date(publishedAt).toLocaleString()}
           </p>
         ) : null}
-      </div>
+      </div> */}
 
       {isLoading ? (
         <div className="rounded-xl border bg-card p-6 text-sm text-muted-foreground">
