@@ -10,7 +10,7 @@ export function Hero() {
     <Element name="home">
       {" "}
       <section className="relative pt-32 pb-20 px-4 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-blue-50 to-white -z-10"></div>
+        <div className="absolute inset-0 bg-linear-to-br from-purple-50 via-blue-50 to-white -z-10"></div>
 
         <div className="absolute top-20 right-10 size-72 bg-purple-300/20 rounded-full blur-3xl -z-10"></div>
         <div className="absolute bottom-20 left-10 size-96 bg-blue-300/20 rounded-full blur-3xl -z-10"></div>
@@ -31,7 +31,7 @@ export function Hero() {
 
               <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
                 Build Your School Website{" "}
-                <span className="bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+                <span className="bg-linear-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
                   With Easy Tools
                 </span>
               </h1>
@@ -45,7 +45,7 @@ export function Hero() {
               <div className="flex flex-col sm:flex-row gap-4 mt-4">
                 <button
                   onClick={() => nav("/auth")}
-                  className="px-8 py-4 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg transition-all flex items-center justify-center gap-2 group cursor-pointer"
+                  className="px-8 py-4 bg-linear-to-r from-purple-600 to-blue-600 text-white rounded-lg transition-all flex items-center justify-center gap-2 group cursor-pointer"
                 >
                   Start Building Free
                   <ArrowRight className="size-5 group-hover:translate-x-1 transition-transform" />
@@ -89,7 +89,7 @@ export function Hero() {
                   alt="Modern web design interface"
                   className="w-full h-auto"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-purple-900/20 to-transparent"></div>
+                <div className="absolute inset-0 bg-linear-to-t from-purple-900/20 to-transparent"></div>
               </div>
 
               <div className="absolute -bottom-6 -left-6 bg-white rounded-xl shadow-xl p-4 border border-gray-100">

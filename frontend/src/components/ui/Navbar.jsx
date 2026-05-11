@@ -13,8 +13,8 @@ export function Navbar() {
         <div className="flex justify-between items-center h-16">
           <Link to="home" duration={500} smooth className="cursor-pointer">
             <div className="flex items-center gap-2">
-              <div className="size-8 bg-gradient-to-br from-purple-600 to-blue-600 rounded-lg"></div>{" "}
-              <span className="text-xl font-semibold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+              <div className="size-8 bg-linear-to-br from-purple-600 to-blue-600 rounded-lg"></div>{" "}
+              <span className="text-xl font-semibold bg-linear-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
                 SchoolBuilder AI
               </span>
             </div>
@@ -48,14 +48,14 @@ export function Navbar() {
               Templates
             </Link>
             <button
-              className="px-6 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg transition cursor-pointer hover:opacity-90"
+              className="px-6 py-2 bg-linear-to-r from-purple-600 to-blue-600 text-white rounded-lg transition cursor-pointer hover:opacity-90"
               onClick={() => nav("/auth")}
             >
               Get Started
             </button>
             <button
               className="px-8 py-2 bg-transparent text-gray-800 rounded-lg border-2 border-gray-300 hover:border-purple-600 transition-colors cursor-pointer"
-              onClick={() => nav("/auth")}
+              onClick={() => nav("/auth", { state: { from: "login" } })}
             >
               Login
             </button>
@@ -96,7 +96,7 @@ export function Navbar() {
             </Link>
             <button
               onClick={() => nav("/auth")}
-              className="w-full px-6 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg"
+              className="w-full px-6 py-2 bg-linear-to-r from-purple-600 to-blue-600 text-white rounded-lg"
             >
               Get Started
             </button>

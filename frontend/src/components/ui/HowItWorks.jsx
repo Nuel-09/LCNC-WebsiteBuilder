@@ -32,7 +32,7 @@ const steps = [
 export function HowItWorks() {
   return (
     <Element name="how-it-works">
-      <section className="py-20 px-4 bg-gradient-to-b from-white to-gray-50">
+      <section className="py-20 px-4 bg-linear-to-b from-white to-gray-50">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -53,7 +53,7 @@ export function HowItWorks() {
           </motion.div>
 
           <div className="grid md:grid-cols-3 gap-8 relative">
-            <div className="hidden md:block absolute top-1/2 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-blue-600 to-purple-600 -translate-y-1/2 -z-10"></div>
+            <div className="hidden md:block absolute top-1/2 left-0 right-0 h-1 bg-linear-to-r from-purple-600 via-blue-600 to-purple-600 -translate-y-1/2 -z-10"></div>
 
             {steps.map((step, index) => (
               <motion.div
@@ -67,7 +67,7 @@ export function HowItWorks() {
                 <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-shadow border border-gray-100">
                   <div className="flex items-center gap-4 mb-6">
                     <div
-                      className={`size-16 rounded-xl bg-gradient-to-br ${step.color} flex items-center justify-center`}
+                      className={`size-16 rounded-xl bg-linear-to-br ${step.color} flex items-center justify-center`}
                     >
                       <step.icon className="size-8 text-white" />
                     </div>
